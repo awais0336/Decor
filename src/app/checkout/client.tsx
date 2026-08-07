@@ -13,6 +13,7 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
 
+  const [city, setCity] = useState("");
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [discountPercentage, setDiscountPercentage] = useState(0);
@@ -23,7 +24,8 @@ export default function CheckoutPage() {
   }, 0);
 
   const discountAmount = Math.round(total * (discountPercentage / 100));
-  const finalTotal = total - discountAmount;
+  const shippingFee = city.trim() === "" ? 0 : (city.trim().toLowerCase() === "lahore" ? 300 : 500);
+  const finalTotal = total - discountAmount + shippingFee;
 
   const handleApplyCoupon = async () => {
     if (!couponInput) return;
@@ -138,7 +140,14 @@ export default function CheckoutPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-muted-foreground mb-1">City</label>
-                      <input required name="city" type="text" className="w-full border rounded-md px-3 py-2 text-sm focus:outline-brand-gold" />
+                      <input 
+                        required 
+                        name="city" 
+                        type="text" 
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        className="w-full border rounded-md px-3 py-2 text-sm focus:outline-brand-gold" 
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-muted-foreground mb-1">Postal Code</label>
@@ -263,7 +272,7 @@ export default function CheckoutPage() {
                 
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span>Free</span>
+                  <span>{shippingFee === 0 ? "Enter city" : `Rs. ${shippingFee.toLocaleString()}`}</span>
                 </div>
                 
                 <div className="flex justify-between font-bold text-lg pt-3 border-t">

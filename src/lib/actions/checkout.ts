@@ -56,9 +56,12 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
       return { success: false, error: "Failed to save address." };
     }
 
+    // Calculate Shipping Cost
+    const shippingCost = city.trim().toLowerCase() === "lahore" ? 300 : 500;
+    
     // Fetch coupons to validate on the server
     let discountAmount = 0;
-    let finalTotal = rawTotal;
+    let finalTotal = rawTotal + shippingCost;
     
     if (couponCode) {
       const { data: configData } = await supabase.storage.from("config").download("coupons.json");
@@ -70,7 +73,7 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
           
           if (validCoupon) {
             discountAmount = Math.round(rawTotal * (validCoupon.discount_percentage / 100));
-            finalTotal = rawTotal - discountAmount;
+            finalTotal = rawTotal - discountAmount + shippingCost;
           }
         } catch (e) {
           console.error("Failed to parse coupons", e);
@@ -83,7 +86,7 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
       customer_id: null, // Guest checkout
       status: "pending",
       subtotal: rawTotal,
-      shipping_cost: 0,
+      shipping_cost: shippingCost,
       discount_amount: discountAmount,
       total_amount: finalTotal,
       shipping_address_id: addressObj.id,
