@@ -146,6 +146,11 @@ export async function deleteProduct(id: string) {
   return { success: true };
 }
 
+export async function deleteProductAction(formData: FormData) {
+  const id = formData.get("id") as string;
+  if (id) await deleteProduct(id);
+}
+
 export async function getProductById(id: string) {
   const supabase = createAdminClient();
   const { data, error } = await supabase

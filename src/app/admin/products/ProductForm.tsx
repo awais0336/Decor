@@ -20,10 +20,19 @@ export default function ProductForm({ categories }: { categories: any[] }) {
     newVariants[index] = { ...newVariants[index], [field]: value };
     setVariants(newVariants);
   };
-
   return (
     <form action={async (formData) => {
-      await createProduct(formData);
+      try {
+        const res = await createProduct(formData);
+        if (res && res.error) {
+          alert("Error: " + res.error);
+        } else if (res && !res.success) {
+          alert("An unexpected error occurred. Please check your input and try again.");
+        }
+      } catch (error: any) {
+        console.error("Action error:", error);
+        alert("A critical error occurred while submitting: " + (error?.message || "Unknown error"));
+      }
     }} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
