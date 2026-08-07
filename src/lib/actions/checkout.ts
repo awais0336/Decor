@@ -16,6 +16,28 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
 
     const supabase = createAdminClient();
 
+    // 0. Validate Stock Before Proceeding
+    for (const item of cartItems) {
+      if (item.variant?.id) {
+        const { data: variantData, error: variantError } = await supabase
+          .from("variants")
+          .select("stock_quantity, name")
+          .eq("id", item.variant.id)
+          .single();
+          
+        if (variantError || !variantData) {
+          return { success: false, error: "One of the products in your cart could not be found." };
+        }
+        if (item.quantity > variantData.stock_quantity) {
+          const itemName = item.name || variantData.name || "an item";
+          return { 
+            success: false, 
+            error: `Not enough stock for ${itemName}. Only ${variantData.stock_quantity} available, but you requested ${item.quantity}.` 
+          };
+        }
+      }
+    }
+
     // 1. Create a guest profile or find existing (simplified for storefront checkout)
     // For a real app we'd link to auth.users, but for guest checkout we can just store details in the order
     // Wait, orders table has customer_id which is a foreign key to profiles.
