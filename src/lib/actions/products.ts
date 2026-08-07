@@ -22,7 +22,12 @@ export async function createProduct(formData: FormData) {
     };
     
     const name = formData.get("name") as string;
-    const slug = name.toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w-]+/g, '');
+    let slug = name.toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w-]+/g, '');
+    
+    const { data: existingSlug } = await supabase.from('products').select('slug').eq('slug', slug).maybeSingle();
+    if (existingSlug) {
+      slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+    }
     const description = formData.get("description") as string;
     const basePriceStr = formData.get("base_price") as string;
     const base_price = basePriceStr ? parseFloat(basePriceStr) : 0;
@@ -185,7 +190,12 @@ export async function updateProduct(id: string, formData: FormData) {
     };
     
     const name = formData.get("name") as string;
-    const slug = name.toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w-]+/g, '');
+    let slug = name.toLowerCase().replace(/[\s_]+/g, '-').replace(/[^\w-]+/g, '');
+    
+    const { data: existingSlug } = await supabase.from('products').select('id, slug').eq('slug', slug).maybeSingle();
+    if (existingSlug && existingSlug.id !== id) {
+      slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
+    }
     const description = formData.get("description") as string;
     const basePriceStr = formData.get("base_price") as string;
     const base_price = basePriceStr ? parseFloat(basePriceStr) : 0;
