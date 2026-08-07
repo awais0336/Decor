@@ -63,23 +63,23 @@ export default async function ProductsPage() {
                           <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
                             {product.category ? product.category.name : "None"}
                           </td>
-                          <td className="px-4 py-3 whitespace-nowrap">Rs. {product.base_price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td className="px-4 py-3 whitespace-nowrap">Rs. {Number(product.base_price || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                           <td className="px-4 py-3 whitespace-nowrap">
                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                               product.status === 'active' ? 'bg-green-100 text-green-700' :
                               product.status === 'draft' ? 'bg-yellow-100 text-yellow-700' :
                               'bg-gray-100 text-gray-700'
                             }`}>
-                              {product.status}
+                              {product.status || 'draft'}
                             </span>
                           </td>
                           <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
-                            {product.variants?.length || 0}
+                            {Array.isArray(product.variants) ? product.variants.length : 0}
                           </td>
                           <td className="px-4 py-3 text-muted-foreground whitespace-nowrap font-medium">
-                            {product.variants && product.variants.length > 0 
-                              ? product.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0)
-                              : (product.stock_quantity || 0)}
+                            {Array.isArray(product.variants) && product.variants.length > 0 
+                              ? product.variants.reduce((sum: number, v: any) => sum + Number(v?.stock_quantity || 0), 0)
+                              : Number(product?.stock_quantity || 0)}
                           </td>
                           <td className="px-4 py-3 text-right whitespace-nowrap">
                             <div className="flex items-center justify-end gap-2">
