@@ -20,18 +20,73 @@ export default function ProductForm({ categories }: { categories: any[] }) {
     newVariants[index] = { ...newVariants[index], [field]: value };
     setVariants(newVariants);
   };
+  const compressImage = async (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      if (!file.type.startsWith("image/") || file.size < 1024 * 1024) {
+        return resolve(file); // Don't compress non-images or files < 1MB
+      }
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+          } else {
+            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve(new File([blob], file.name, { type: "image/jpeg" }));
+            } else {
+              resolve(file);
+            }
+          }, "image/jpeg", 0.8);
+        };
+        img.onerror = () => resolve(file);
+      };
+      reader.onerror = () => resolve(file);
+    });
+  };
+
   return (
     <form action={async (formData) => {
       try {
-        const res = await createProduct(formData);
+        const newFormData = new FormData();
+        for (const [key, value] of Array.from(formData.entries())) {
+          if (value instanceof File && value.size > 0) {
+            const compressedFile = await compressImage(value);
+            newFormData.append(key, compressedFile);
+          } else {
+            newFormData.append(key, value);
+          }
+        }
+
+        const res = await createProduct(newFormData);
         if (res && res.error) {
           alert("Error: " + res.error);
         } else if (res && !res.success) {
           alert("An unexpected error occurred. Please check your input and try again.");
+        } else {
+          alert("Product added successfully!");
         }
       } catch (error: any) {
         console.error("Action error:", error);
-        alert("A critical error occurred while submitting: " + (error?.message || "Unknown error"));
+        if (error?.message?.includes("An unexpected response was received from the server")) {
+          alert("A server error occurred, likely due to a Vercel timeout or size limit. Try using a smaller image or checking your connection.");
+        } else {
+          alert("A critical error occurred while submitting: " + (error?.message || "Unknown error"));
+        }
       }
     }} className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
