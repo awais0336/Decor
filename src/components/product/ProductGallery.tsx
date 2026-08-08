@@ -16,7 +16,7 @@ export function ProductGallery({
 }) {
   return (
     <div className="sticky top-40 md:top-48 flex flex-col gap-6">
-      <div className="relative aspect-[4/5] bg-brand-secondary overflow-hidden shadow-sm border border-brand-border/30 rounded-sm">
+      <div className="relative aspect-[4/5] bg-brand-secondary overflow-hidden shadow-sm border border-brand-border/20 rounded-2xl">
         <Image
           src={mainImage}
           alt={productName}
@@ -32,7 +32,7 @@ export function ProductGallery({
             <button
               key={i}
               onClick={() => setMainImage(imgUrl)}
-              className={`relative flex-shrink-0 aspect-square w-24 bg-brand-secondary overflow-hidden cursor-pointer transition-all shadow-sm border border-brand-border/30 rounded-sm ${
+              className={`relative flex-shrink-0 aspect-square w-24 bg-brand-secondary overflow-hidden cursor-pointer transition-all shadow-sm border border-brand-border/20 rounded-xl ${
                 mainImage === imgUrl ? "ring-2 ring-brand-gold ring-offset-2 ring-offset-brand-primary" : "opacity-70 hover:opacity-100 hover:shadow-md"
               }`}
             >

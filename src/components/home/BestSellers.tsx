@@ -85,8 +85,8 @@ export function CategorySlider({
                 whileHover={{ y: -10 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <Link href={`/product/${product.id}`} className="block">
-                  <div className="relative aspect-[3/4] bg-white overflow-hidden mb-6 shadow-sm hover:shadow-md transition-shadow duration-300 border border-brand-border/30 rounded-sm">
+                <Link href={`/product/${product.id}`} className="group flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-brand-border/20 shadow-sm p-4">
+                  <div className="relative aspect-[3/4] bg-brand-secondary overflow-hidden mb-4 rounded-xl">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -134,16 +134,16 @@ export function CategorySlider({
                     )}
                   </div>
                   
-                  <div className="flex flex-col text-left">
+                  <div className="flex flex-col text-left px-1">
                     <p className="text-brand-text/50 text-xs uppercase tracking-wider font-semibold mb-1">
                       {product.category}
                     </p>
                     <h3 className="font-heading text-lg md:text-xl text-brand-text group-hover:text-brand-gold transition-colors mb-1 truncate">
                       {product.name}
                     </h3>
-                    <span className="font-sans font-medium text-brand-text">
+                    <p className="font-sans font-medium text-brand-text">
                       {product.price}
-                    </span>
+                    </p>
                   </div>
                 </Link>
               </motion.div>

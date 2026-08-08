@@ -8,6 +8,7 @@ import { ChevronDown, SlidersHorizontal, LayoutGrid, List, Check, X } from "luci
 import { motion, AnimatePresence } from "framer-motion";
 import { getStorefrontProducts } from "@/lib/actions/storefront";
 import { Breadcrumbs, BreadcrumbItem } from "@/components/ui/Breadcrumbs";
+import { cn } from "@/lib/utils";
 
 const PRICE_RANGES = [
   { label: "Under Rs. 1,000", min: 0, max: 1000 },
@@ -254,9 +255,15 @@ export default function CollectionsPage({ categorySlug, breadcrumbs }: { categor
               <Link 
                 key={product.id} 
                 href={`/product/${product.id}`}
-                className={`group flex ${view === "grid" ? "flex-col" : "flex-row gap-8 items-center border border-brand-border p-4 hover:border-brand-gold transition-colors"}`}
+                className={cn(
+                  "group flex bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-brand-border/20 shadow-sm",
+                  view === "grid" ? "flex-col" : "flex-row gap-6 p-4 items-center"
+                )}
               >
-                <div className={`relative bg-brand-secondary overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-brand-border/30 rounded-sm ${view === "grid" ? "aspect-[4/5] mb-4" : "aspect-square w-48 flex-shrink-0"}`}>
+                <div className={cn(
+                  "relative bg-brand-secondary overflow-hidden shrink-0",
+                  view === "grid" ? "aspect-[4/5] w-full" : "aspect-square w-48 rounded-xl"
+                )}>
                   <Image
                     src={product.image}
                     alt={product.name}
@@ -265,7 +272,10 @@ export default function CollectionsPage({ categorySlug, breadcrumbs }: { categor
                   />
                   <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <div className={view === "list" ? "flex-1" : ""}>
+                <div className={cn(
+                  "flex flex-col",
+                  view === "grid" ? "p-5" : "flex-1"
+                )}>
                   <p className="text-brand-text/50 text-xs uppercase tracking-widest font-semibold mb-2">
                     {product.category}
                   </p>
