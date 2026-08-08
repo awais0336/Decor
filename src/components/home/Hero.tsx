@@ -51,12 +51,8 @@ export function Hero() {
           sizes="100vw"
         />
         
-        {/* Subtle warm sunlight gradient overlay */}
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-tr from-brand-gold/10 via-transparent to-brand-primary/5 mix-blend-overlay"
-          animate={{ opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        />
+        {/* Text contrast gradient - subtle dark wash behind the center text */}
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/40 to-transparent" />
         
         {/* Navbar protection gradient - ensures white icons are visible */}
         <div className="absolute top-0 left-0 right-0 h-48 bg-gradient-to-b from-black/70 to-transparent" />
