@@ -27,7 +27,7 @@ export function FeaturedProducts({ products }: { products: any[] }) {
           transition={{
             repeat: Infinity,
             ease: "linear",
-            duration: 30, // Adjust speed here
+            duration: 45, // Slowed down from 30
           }}
           style={{
             willChange: "transform",
