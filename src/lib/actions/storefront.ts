@@ -68,6 +68,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
         ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
         : true,
       createdAt: p.created_at,
+      is_featured: p.is_featured,
     };
   });
 }
