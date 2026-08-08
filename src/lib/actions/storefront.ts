@@ -46,7 +46,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
   const { data, error } = await query.order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching storefront products:", JSON.stringify(error, null, 2), error);
+    console.warn("[getStorefrontProducts] Error:", JSON.stringify(error, null, 2), error);
     return [];
   }
 
@@ -157,7 +157,7 @@ export async function searchStorefrontProducts(query: string) {
     .eq("status", "active");
 
   if (error) {
-    console.error("Error searching products:", error);
+    console.warn("[searchStorefrontProducts] Error:", error);
     return [];
   }
 
@@ -211,7 +211,7 @@ export async function getStorefrontProduct(id: string) {
     .single();
 
   if (error || !data) {
-    console.error("Error fetching storefront product:", error ? JSON.stringify(error, null, 2) : "No data found");
+    console.warn("[getStorefrontProduct] Error:", error ? JSON.stringify(error, null, 2) : "No data found");
     return null;
   }
 
@@ -265,7 +265,7 @@ export async function getTopLevelCategories() {
     .order("name");
 
   if (error) {
-    console.error("Error fetching top-level categories:", error);
+    console.warn("[getTopLevelCategories] Error:", error);
     return [];
   }
   return data;
@@ -279,12 +279,10 @@ export async function getAllCategories() {
     .order("name");
 
   if (error) {
-    console.error("Error fetching all categories:");
-    console.error("- Message:", error?.message);
-    console.error("- Details:", error?.details);
-    console.error("- Full error:", error);
-    console.error("- URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
-    console.error("- Key exists:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
+    console.warn("[getAllCategories] Error:");
+    console.warn("- Message:", error?.message);
+    console.warn("- Details:", error?.details);
+    console.warn("- Full error:", error);
     return [];
   }
   return data;
@@ -299,7 +297,7 @@ export async function getCategoryBySlug(slug: string) {
     .single();
 
   if (error) {
-    console.error(`Error fetching category ${slug}:`, error);
+    console.warn(`[getCategoryBySlug] Error for ${slug}:`, error);
     return null;
   }
   return data;
@@ -314,7 +312,7 @@ export async function getCategoryChildren(parentId: string) {
     .order("name");
 
   if (error) {
-    console.error(`Error fetching children for category ${parentId}:`, error);
+    console.warn(`[getCategoryChildren] Error for ${parentId}:`, error);
     return [];
   }
   return data;
@@ -329,7 +327,7 @@ export async function getCategoriesBySlugs(slugs: string[]) {
     .in("slug", slugs);
 
   if (error) {
-    console.error("Error fetching categories by slugs:", error);
+    console.warn("[getCategoriesBySlugs] Error:", error);
     return [];
   }
   
