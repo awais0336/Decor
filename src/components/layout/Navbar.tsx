@@ -3,15 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, ShoppingBag, X, MessageCircle } from "lucide-react";
+import { Search, Heart, ShoppingBag, X, MessageCircle, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/components/cart/CartContext";
 import { useRouter } from "next/navigation";
 import { searchStorefrontProducts } from "@/lib/actions/storefront";
+import { SidebarDrawer } from "./SidebarDrawer";
 
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -88,8 +90,17 @@ export function Navbar() {
         "max-w-[1600px] mx-auto flex items-center justify-between px-2 sm:px-4 md:px-12",
         scrolled ? "py-3" : "py-4 md:py-6"
       )}>
-        {/* Left Space - Empty to balance layout */}
+        {/* Left Space - Hamburger Menu */}
         <div className="flex-1 flex items-center">
+          <button 
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 p-2 -ml-2"
+            onClick={() => setIsSidebarOpen(true)}
+            aria-label="Open Menu"
+          >
+            <div className="absolute inset-0 bg-white/20 dark:bg-black/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-brand-text/5 rounded-full blur-md opacity-100" />
+            <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-brand-text relative z-10" strokeWidth={1.5} />
+          </button>
         </div>
 
         {/* Logo - Center */}
@@ -124,28 +135,31 @@ export function Navbar() {
             </svg>
           </a>
           <button 
-            className="hover:text-brand-gold transition-colors" 
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" 
             aria-label="Search"
             onClick={() => setIsSearchOpen(true)}
           >
-            <Search className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+            <div className="absolute inset-0 bg-brand-text/5 rounded-full blur-md opacity-100" />
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" strokeWidth={1.5} />
           </button>
-          <Link href="/wishlist" className="hover:text-brand-gold transition-colors relative" aria-label="Wishlist">
-            <Heart className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+          <Link href="/wishlist" className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Wishlist">
+            <div className="absolute inset-0 bg-brand-text/5 rounded-full blur-md opacity-100" />
+            <Heart className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" strokeWidth={1.5} />
             {wishlistItems.length > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-brand-gold text-white text-[9px] sm:text-[10px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-medium">
+              <span className="absolute -top-1.5 -right-1.5 bg-brand-gold text-white text-[9px] sm:text-[10px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-medium z-20">
                 {wishlistItems.length}
               </span>
             )}
           </Link>
           <button 
-            className="hover:text-brand-gold transition-colors relative" 
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" 
             aria-label="Cart"
             onClick={() => setIsCartOpen(true)}
           >
-            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.5} />
+            <div className="absolute inset-0 bg-brand-text/5 rounded-full blur-md opacity-100" />
+            <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 relative z-10" strokeWidth={1.5} />
             {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-brand-text text-brand-primary text-[9px] sm:text-[10px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-medium">
+              <span className="absolute -top-1.5 -right-1.5 bg-brand-text text-brand-primary text-[9px] sm:text-[10px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-medium z-20">
                 {cartCount}
               </span>
             )}
@@ -220,7 +234,12 @@ export function Navbar() {
           </>
         )}
       </div>
-    </header>
-  </>
+      </header>
+
+      <SidebarDrawer 
+        isOpen={isSidebarOpen} 
+        onClose={() => setIsSidebarOpen(false)} 
+      />
+    </>
   );
 }
