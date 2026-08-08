@@ -130,7 +130,7 @@ export default function ProductForm({ categories }: { categories: any[] }) {
         ></textarea>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
           <label htmlFor="base_price" className="text-sm font-medium">Base Price (Optional, Rs.)</label>
           <input 
@@ -153,6 +153,17 @@ export default function ProductForm({ categories }: { categories: any[] }) {
             <option value="active">Active</option>
             <option value="archived">Archived</option>
           </select>
+        </div>
+        <div className="space-y-2 flex flex-col justify-center">
+          <label className="text-sm font-medium opacity-0 hidden md:block">Featured</label>
+          <label className="flex items-center gap-2 cursor-pointer border rounded-md p-2 h-10 hover:bg-muted/50 transition-colors">
+            <input 
+              type="checkbox" 
+              name="is_featured" 
+              className="h-4 w-4 rounded border-gray-300 text-brand-gold focus:ring-brand-gold"
+            />
+            <span className="text-sm font-medium">Featured Product</span>
+          </label>
         </div>
       </div>
 

@@ -201,10 +201,11 @@ export async function updateProduct(id: string, formData: FormData) {
     const base_price = basePriceStr ? parseFloat(basePriceStr) : 0;
     const category_id = formData.get("category_id") as string || null;
     const status = formData.get("status") as string;
+    const is_featured = formData.get("is_featured") === "on";
     
     const { error: productError } = await supabase
       .from("products")
-      .update({ name, slug, description, base_price, category_id, status })
+      .update({ name, slug, description, base_price, category_id, status, is_featured })
       .eq("id", id);
 
     if (productError) return { error: productError.message };

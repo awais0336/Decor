@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Hero } from "@/components/home/Hero";
+import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { CategorySlider } from "@/components/home/BestSellers";
 import { Footer } from "@/components/layout/Footer";
 import { getStorefrontProducts, getAllCategories } from "@/lib/actions/storefront";
@@ -11,6 +12,8 @@ export default async function Home() {
     getStorefrontProducts(),
     getAllCategories()
   ]);
+
+  const featuredProducts = products.filter((p: any) => p.is_featured);
 
   // Cache to map a category name to its top-level parent's name
   const topLevelNameMap: Record<string, string> = {};
@@ -56,6 +59,7 @@ export default async function Home() {
     <main className="flex min-h-screen flex-col bg-brand-primary">
       <Navbar />
       <Hero />
+      <FeaturedProducts products={featuredProducts} />
       
       {categoriesToDisplay.length === 0 ? (
         <div className="py-32 text-center text-brand-text/50">
