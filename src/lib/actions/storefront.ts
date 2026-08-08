@@ -15,6 +15,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
       stock_quantity,
       status,
       created_at,
+      is_featured,
       category:categories(name),
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
