@@ -13,6 +13,13 @@ interface SidebarDrawerProps {
 
 export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
   const [categories, setCategories] = useState<any[]>([]);
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+
+  const toggleCategory = (categoryId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setExpandedCategories(prev => ({ ...prev, [categoryId]: !prev[categoryId] }));
+  };
 
   useEffect(() => {
     if (isOpen && categories.length === 0) {
@@ -71,16 +78,6 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
             <Link href="/" onClick={onClose} className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors">Home Page</Link>
             <Link href="/collections" onClick={onClose} className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors">All Products</Link>
             <Link href="/contact" onClick={onClose} className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors">Track Your Order!</Link>
-            
-            <div className="h-px bg-brand-border/50 my-2" />
-            
-            {/* You can edit these placeholder sale links later! */}
-            <Link href="#" onClick={onClose} className="font-sans text-brand-gold text-lg hover:text-brand-text transition-colors flex items-center">
-              Summer Sale Special! 🎉
-            </Link>
-            <Link href="#" onClick={onClose} className="font-sans text-brand-gold text-lg hover:text-brand-text transition-colors flex items-center">
-              Under 999 Sale
-            </Link>
           </div>
 
           <div className="h-px bg-brand-border/50" />
@@ -91,28 +88,50 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
               Categories
             </h3>
             <div className="flex flex-col gap-4">
-              {categories.filter(c => !c.parent_id).map(category => (
-                <div key={category.id} className="flex flex-col gap-2">
-                  <Link 
-                    href={`/category/${category.slug}`} 
-                    onClick={onClose}
-                    className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors flex items-center justify-between group"
-                  >
-                    {category.name}
-                  </Link>
-                  {/* Subcategories */}
-                  {categories.filter(sub => sub.parent_id === category.id).map(sub => (
-                    <Link 
-                      key={sub.id}
-                      href={`/category/${category.slug}/${sub.slug}`} 
-                      onClick={onClose}
-                      className="font-sans text-brand-text/70 text-base pl-4 hover:text-brand-gold transition-colors"
-                    >
-                      {sub.name}
-                    </Link>
-                  ))}
-                </div>
-              ))}
+              {categories.filter(c => !c.parent_id).map(category => {
+                const subcategories = categories.filter(sub => sub.parent_id === category.id);
+                const hasSubcategories = subcategories.length > 0;
+                const isExpanded = expandedCategories[category.id];
+
+                return (
+                  <div key={category.id} className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between group">
+                      <Link 
+                        href={`/category/${category.slug}`} 
+                        onClick={onClose}
+                        className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors flex-1"
+                      >
+                        {category.name}
+                      </Link>
+                      {hasSubcategories && (
+                        <button
+                          onClick={(e) => toggleCategory(category.id, e)}
+                          className="p-2 -mr-2 text-brand-text/50 hover:text-brand-text transition-colors"
+                          aria-label="Toggle subcategories"
+                        >
+                          <ChevronRight className={cn("w-5 h-5 transition-transform duration-200", isExpanded ? "rotate-90" : "")} />
+                        </button>
+                      )}
+                    </div>
+                    {/* Subcategories */}
+                    <div className={cn(
+                      "flex flex-col gap-2 overflow-hidden transition-all duration-300 ease-in-out",
+                      isExpanded ? "max-h-[500px] opacity-100 mt-2" : "max-h-0 opacity-0"
+                    )}>
+                      {subcategories.map(sub => (
+                        <Link 
+                          key={sub.id}
+                          href={`/category/${category.slug}/${sub.slug}`} 
+                          onClick={onClose}
+                          className="font-sans text-brand-text/70 text-base pl-4 hover:text-brand-gold transition-colors block py-1"
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
               
               <Link 
                 href="/category" 
