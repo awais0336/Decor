@@ -256,7 +256,7 @@ export default function CollectionsPage({ categorySlug, breadcrumbs }: { categor
                 href={`/product/${product.id}`}
                 className={`group flex ${view === "grid" ? "flex-col" : "flex-row gap-8 items-center border border-brand-border p-4 hover:border-brand-gold transition-colors"}`}
               >
-                <div className={`relative bg-brand-secondary overflow-hidden ${view === "grid" ? "aspect-[4/5] mb-4" : "aspect-square w-48 flex-shrink-0"}`}>
+                <div className={`relative bg-brand-secondary overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 border border-brand-border/30 rounded-sm ${view === "grid" ? "aspect-[4/5] mb-4" : "aspect-square w-48 flex-shrink-0"}`}>
                   <Image
                     src={product.image}
                     alt={product.name}

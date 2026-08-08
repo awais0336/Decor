@@ -86,7 +86,7 @@ export function CategorySlider({
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
                 <Link href={`/product/${product.id}`} className="block">
-                  <div className="relative aspect-[3/4] bg-white overflow-hidden mb-6">
+                  <div className="relative aspect-[3/4] bg-white overflow-hidden mb-6 shadow-sm hover:shadow-md transition-shadow duration-300 border border-brand-border/30 rounded-sm">
                     <Image
                       src={product.image}
                       alt={product.name}
