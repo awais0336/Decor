@@ -77,7 +77,6 @@ export function SidebarDrawer({ isOpen, onClose }: SidebarDrawerProps) {
           <div className="flex flex-col gap-4">
             <Link href="/" onClick={onClose} className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors">Home Page</Link>
             <Link href="/collections" onClick={onClose} className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors">All Products</Link>
-            <Link href="/contact" onClick={onClose} className="font-sans text-brand-text text-lg hover:text-brand-gold transition-colors">Track Your Order!</Link>
           </div>
 
           <div className="h-px bg-brand-border/50" />
