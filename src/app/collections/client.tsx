@@ -256,14 +256,11 @@ export default function CollectionsPage({ categorySlug, breadcrumbs }: { categor
                 key={product.id} 
                 href={`/product/${product.id}`}
                 className={cn(
-                  "group flex bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-brand-border/20 shadow-sm",
-                  view === "grid" ? "flex-col" : "flex-row gap-6 p-4 items-center"
+                  "group flex bg-white rounded-2xl transition-all duration-300 hover:shadow-lg border border-brand-border/20 shadow-sm",
+                  view === "grid" ? "flex-col p-3" : "flex-row gap-6 p-4 items-center"
                 )}
               >
-                <div className={cn(
-                  "relative bg-brand-secondary overflow-hidden shrink-0",
-                  view === "grid" ? "aspect-[4/5] w-full" : "aspect-square w-48 rounded-xl"
-                )}>
+                <div className={cn(`relative bg-[#f5f5f7] overflow-hidden rounded-2xl ${view === "grid" ? "aspect-square w-full mb-3" : "aspect-square w-48 flex-shrink-0"}`)}>
                   <Image
                     src={product.image}
                     alt={product.name}

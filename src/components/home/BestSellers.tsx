@@ -43,9 +43,9 @@ export function CategorySlider({
   }, [displayItems]);
 
   return (
-    <section className="py-12 md:py-16 bg-brand-secondary overflow-hidden">
+    <section className="py-6 md:py-8 bg-brand-secondary overflow-hidden">
       <div className="max-w-[1600px] mx-auto w-full">
-        <div className="px-6 md:px-12 mb-12">
+        <div className="px-6 md:px-12 mb-6">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
             <div>
               <h2 className="font-heading text-4xl md:text-5xl text-brand-text mb-4">
@@ -81,12 +81,12 @@ export function CategorySlider({
             displayItems.map((product, idx) => (
               <motion.div
                 key={`${product.id}-${idx}`}
-                className="w-[280px] md:w-[360px] flex-shrink-0 group relative"
+                className="w-[200px] md:w-[240px] flex-shrink-0 group relative"
                 whileHover={{ y: -10 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <Link href={`/product/${product.id}`} className="group flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-brand-border/20 shadow-sm p-4">
-                  <div className="relative aspect-[3/4] bg-brand-secondary overflow-hidden mb-4 rounded-xl">
+                <Link href={`/product/${product.id}`} className="group flex flex-col bg-white rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-brand-border/20 shadow-sm p-3">
+                  <div className="relative aspect-square bg-[#f5f5f7] overflow-hidden mb-4 rounded-2xl">
                     <Image
                       src={product.image}
                       alt={product.name}
