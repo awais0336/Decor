@@ -43,7 +43,7 @@ export function CategorySlider({
   }, [displayItems]);
 
   return (
-    <section className="py-24 md:py-32 bg-brand-secondary overflow-hidden">
+    <section className="py-12 md:py-16 bg-brand-secondary overflow-hidden">
       <div className="max-w-[1600px] mx-auto w-full">
         <div className="px-6 md:px-12 mb-12">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
