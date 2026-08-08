@@ -46,7 +46,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
   const { data, error } = await query.order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error fetching storefront products:", JSON.stringify(error, null, 2));
+    console.error("Error fetching storefront products:", JSON.stringify(error, null, 2), error);
     return [];
   }
 
@@ -279,7 +279,12 @@ export async function getAllCategories() {
     .order("name");
 
   if (error) {
-    console.error("Error fetching all categories:", error);
+    console.error("Error fetching all categories:");
+    console.error("- Message:", error?.message);
+    console.error("- Details:", error?.details);
+    console.error("- Full error:", error);
+    console.error("- URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.error("- Key exists:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
     return [];
   }
   return data;
