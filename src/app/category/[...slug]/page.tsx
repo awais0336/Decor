@@ -28,7 +28,7 @@ export default async function CategoryCatchAllPage({ params }: { params: Promise
   let currentPath = "/category";
   slugs.forEach(slug => {
     currentPath += `/${slug}`;
-    const cat = breadcrumbCategories.find(c => c.slug === slug);
+    const cat = breadcrumbCategories.find(c => c?.slug === slug);
     breadcrumbItems.push({
       label: cat ? cat.name : slug,
       href: currentPath
