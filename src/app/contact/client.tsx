@@ -29,7 +29,7 @@ export default function ContactPage() {
   return (
     <div className="flex min-h-screen flex-col bg-brand-primary">
       
-      <div className="flex-1 pt-32 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto w-full">
+      <div className="flex-1 pt-40 md:pt-48 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto w-full">
         <div className="text-center mb-16">
           <h1 className="font-heading text-4xl md:text-5xl text-brand-text mb-4">Contact Us</h1>
           <p className="font-sans text-brand-text/70 max-w-2xl mx-auto">

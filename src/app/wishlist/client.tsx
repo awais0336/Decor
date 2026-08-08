@@ -10,7 +10,7 @@ export default function WishlistPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-brand-primary">
-      <div className="flex-1 pt-32 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto w-full">
+      <div className="flex-1 pt-40 md:pt-48 pb-24 px-6 md:px-12 max-w-[1200px] mx-auto w-full">
         <div className="flex items-end justify-between mb-12 border-b border-brand-border/50 pb-6">
           <div>
             <h1 className="font-heading text-4xl text-brand-text mb-2">Your Wishlist</h1>
