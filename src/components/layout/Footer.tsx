@@ -132,10 +132,6 @@ export async function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-brand-text/10 font-sans text-brand-text/50 text-xs">
           <p>&copy; {new Date().getFullYear()} Decornish. All rights reserved.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="/privacy" className="hover:text-brand-gold transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-brand-gold transition-colors">Terms of Service</Link>
-          </div>
         </div>
       </div>
     </footer>
