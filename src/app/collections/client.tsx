@@ -109,7 +109,7 @@ export default function CollectionsPage({ categorySlug, breadcrumbs }: { categor
     <div className="flex min-h-screen flex-col bg-brand-primary">
       
       {/* Header */}
-      <div className="pt-32 pb-16 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
+      <div className="pt-40 md:pt-48 pb-16 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
         {breadcrumbs && breadcrumbs.length > 0 && (
           <Breadcrumbs items={breadcrumbs} />
         )}

@@ -15,7 +15,7 @@ export function ProductGallery({
   setMainImage: (img: string) => void
 }) {
   return (
-    <div className="sticky top-32 flex flex-col gap-6">
+    <div className="sticky top-40 md:top-48 flex flex-col gap-6">
       <div className="relative aspect-[4/5] bg-brand-secondary overflow-hidden">
         <Image
           src={mainImage}

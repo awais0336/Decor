@@ -20,7 +20,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     <main className="flex min-h-screen flex-col bg-brand-primary">
       <Navbar />
       
-      <div className="pt-32 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto w-full flex-1">
+      <div className="pt-40 md:pt-48 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto w-full flex-1">
         <Link href="/" className="relative z-10 inline-flex items-center gap-2 text-brand-text/70 hover:text-brand-gold transition-colors mb-8 font-sans text-sm uppercase tracking-widest">
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>

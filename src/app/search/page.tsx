@@ -20,7 +20,7 @@ export default async function SearchPage({
   return (
     <main className="flex min-h-screen flex-col bg-brand-primary">
       <Navbar />
-      <div className="flex-1 pt-32 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
+      <div className="flex-1 pt-40 md:pt-48 pb-24 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
         <h1 className="font-heading text-4xl text-brand-text mb-4">
           Search Results
         </h1>

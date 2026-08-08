@@ -43,7 +43,7 @@ export default async function CategoryCatchAllPage({ params }: { params: Promise
       <div className="min-h-screen flex flex-col bg-stone-50">
         <Navbar />
         
-        <main className="flex-grow pt-24 pb-16">
+        <main className="flex-grow pt-40 md:pt-48 pb-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Breadcrumbs items={breadcrumbItems} />
             
