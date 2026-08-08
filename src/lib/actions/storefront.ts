@@ -14,6 +14,7 @@ export async function getStorefrontProducts() {
       base_price,
       stock_quantity,
       status,
+      created_at,
       category:categories(name),
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
@@ -43,6 +44,7 @@ export async function getStorefrontProducts() {
       inStock: p.variants && p.variants.length > 0 
         ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
         : true,
+      createdAt: p.created_at,
     };
   });
 }
@@ -123,6 +125,7 @@ export async function searchStorefrontProducts(query: string) {
       stock_quantity,
       description,
       status,
+      created_at,
       category:categories(name),
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
@@ -159,6 +162,7 @@ export async function searchStorefrontProducts(query: string) {
       inStock: p.variants && p.variants.length > 0 
         ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
         : true,
+      createdAt: p.created_at,
     };
   });
 }

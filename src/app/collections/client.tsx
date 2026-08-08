@@ -1,24 +1,110 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, SlidersHorizontal, LayoutGrid, List } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ChevronDown, SlidersHorizontal, LayoutGrid, List, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getStorefrontProducts } from "@/lib/actions/storefront";
 
+const PRICE_RANGES = [
+  { label: "Under Rs. 1,000", min: 0, max: 1000 },
+  { label: "Rs. 1,000 - Rs. 5,000", min: 1000, max: 5000 },
+  { label: "Rs. 5,000 - Rs. 10,000", min: 5000, max: 10000 },
+  { label: "Over Rs. 10,000", min: 10000, max: Infinity },
+];
+
 export default function CollectionsPage({ categorySlug }: { categorySlug?: string } = {}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
+
+  // State from URL
+  const selectedCategories = searchParams.getAll("category");
+  const selectedPriceRanges = searchParams.getAll("price");
+  const sortBy = searchParams.get("sort") || "newest";
 
   useEffect(() => {
     getStorefrontProducts().then(setProducts);
   }, []);
 
-  const displayedProducts = categorySlug 
-    ? products.filter(p => p.category.toLowerCase().replace(/\s+/g, "-") === categorySlug.toLowerCase())
-    : products;
+  const uniqueCategories = useMemo(() => {
+    const cats = new Set(products.map(p => p.category));
+    return Array.from(cats).sort();
+  }, [products]);
+
+  const updateFilters = (key: string, value: string, checked: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (checked) {
+      params.append(key, value);
+    } else {
+      const allValues = params.getAll(key).filter(v => v !== value);
+      params.delete(key);
+      allValues.forEach(v => params.append(key, v));
+    }
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const updateSort = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", e.target.value);
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const clearFilters = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("category");
+    params.delete("price");
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const displayedProducts = useMemo(() => {
+    let filtered = products;
+
+    if (categorySlug) {
+      filtered = filtered.filter(p => p.category.toLowerCase().replace(/\s+/g, "-") === categorySlug.toLowerCase());
+    } else if (selectedCategories.length > 0) {
+      filtered = filtered.filter(p => selectedCategories.includes(p.category));
+    }
+
+    if (selectedPriceRanges.length > 0) {
+      filtered = filtered.filter(p => {
+        const price = p.rawPrice;
+        return selectedPriceRanges.some(rangeLabel => {
+          const range = PRICE_RANGES.find(r => r.label === rangeLabel);
+          return range && price >= range.min && price < range.max;
+        });
+      });
+    }
+
+    let sorted = [...filtered];
+    switch (sortBy) {
+      case "price-asc":
+        sorted.sort((a, b) => a.rawPrice - b.rawPrice);
+        break;
+      case "price-desc":
+        sorted.sort((a, b) => b.rawPrice - a.rawPrice);
+        break;
+      case "name-asc":
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "name-desc":
+        sorted.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "newest":
+      default:
+        sorted.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+        break;
+    }
+
+    return sorted;
+  }, [products, categorySlug, selectedCategories, selectedPriceRanges, sortBy]);
+
+  const hasActiveFilters = selectedCategories.length > 0 || selectedPriceRanges.length > 0;
 
   return (
     <div className="flex min-h-screen flex-col bg-brand-primary">
@@ -48,8 +134,20 @@ export default function CollectionsPage({ categorySlug }: { categorySlug?: strin
           </div>
           
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-sm font-button font-medium uppercase tracking-widest">
-              Sort By <ChevronDown className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-sm font-button font-medium uppercase tracking-widest relative">
+              <span className="hidden sm:inline">Sort By</span>
+              <select 
+                value={sortBy}
+                onChange={updateSort}
+                className="appearance-none bg-transparent font-button font-medium text-sm text-brand-text uppercase tracking-widest focus:outline-none cursor-pointer pr-6"
+              >
+                <option value="newest">Newest</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
+              </select>
+              <ChevronDown className="w-4 h-4 absolute right-0 pointer-events-none" />
             </div>
             <div className="flex items-center gap-2 border-l border-brand-border pl-6">
               <button onClick={() => setView("grid")} className={`p-2 transition-colors ${view === "grid" ? "text-brand-text" : "text-brand-text/30"}`}>
@@ -76,24 +174,68 @@ export default function CollectionsPage({ categorySlug }: { categorySlug?: strin
                className="hidden md:block overflow-hidden flex-shrink-0"
              >
                <div className="w-[280px] pr-8 space-y-8">
-                 {/* Filter Groups */}
-                 {['Category', 'Color', 'Material', 'Price Range'].map((group) => (
-                   <div key={group} className="border-b border-brand-border pb-6">
-                     <h3 className="font-heading text-xl mb-4 text-brand-text">{group}</h3>
+                 {hasActiveFilters && (
+                   <button 
+                     onClick={clearFilters}
+                     className="flex items-center gap-2 font-button text-xs uppercase tracking-widest text-brand-text hover:text-brand-gold transition-colors pb-4 border-b border-brand-border w-full"
+                   >
+                     <X className="w-4 h-4" /> Clear All Filters
+                   </button>
+                 )}
+                 
+                 {/* Category Filter */}
+                 {!categorySlug && uniqueCategories.length > 0 && (
+                   <div className="border-b border-brand-border pb-6">
+                     <h3 className="font-heading text-xl mb-4 text-brand-text">Category</h3>
                      <div className="space-y-3">
-                       {[1, 2, 3].map((item) => (
-                         <label key={item} className="flex items-center gap-3 cursor-pointer group/label">
-                           <div className="w-4 h-4 border border-brand-border group-hover/label:border-brand-gold flex items-center justify-center transition-colors">
-                             {/* Checkmark icon could go here if selected */}
-                           </div>
-                           <span className="font-sans text-sm text-brand-text/70 group-hover/label:text-brand-text transition-colors">
-                             Option {item}
-                           </span>
-                         </label>
-                       ))}
+                       {uniqueCategories.map((category) => {
+                         const isSelected = selectedCategories.includes(category);
+                         return (
+                           <label key={category} className="flex items-center gap-3 cursor-pointer group/label">
+                             <div className={`w-4 h-4 border flex items-center justify-center transition-colors ${isSelected ? 'bg-brand-gold border-brand-gold text-brand-primary' : 'border-brand-border group-hover/label:border-brand-gold'}`}>
+                               {isSelected && <Check className="w-3 h-3" />}
+                             </div>
+                             <input 
+                               type="checkbox" 
+                               className="hidden" 
+                               checked={isSelected}
+                               onChange={(e) => updateFilters("category", category, e.target.checked)}
+                             />
+                             <span className={`font-sans text-sm transition-colors ${isSelected ? 'text-brand-text font-medium' : 'text-brand-text/70 group-hover/label:text-brand-text'}`}>
+                               {category}
+                             </span>
+                           </label>
+                         );
+                       })}
                      </div>
                    </div>
-                 ))}
+                 )}
+
+                 {/* Price Range Filter */}
+                 <div className="border-b border-brand-border pb-6">
+                   <h3 className="font-heading text-xl mb-4 text-brand-text">Price Range</h3>
+                   <div className="space-y-3">
+                     {PRICE_RANGES.map((range) => {
+                       const isSelected = selectedPriceRanges.includes(range.label);
+                       return (
+                         <label key={range.label} className="flex items-center gap-3 cursor-pointer group/label">
+                           <div className={`w-4 h-4 border flex items-center justify-center transition-colors ${isSelected ? 'bg-brand-gold border-brand-gold text-brand-primary' : 'border-brand-border group-hover/label:border-brand-gold'}`}>
+                             {isSelected && <Check className="w-3 h-3" />}
+                           </div>
+                           <input 
+                             type="checkbox" 
+                             className="hidden" 
+                             checked={isSelected}
+                             onChange={(e) => updateFilters("price", range.label, e.target.checked)}
+                           />
+                           <span className={`font-sans text-sm transition-colors ${isSelected ? 'text-brand-text font-medium' : 'text-brand-text/70 group-hover/label:text-brand-text'}`}>
+                             {range.label}
+                           </span>
+                         </label>
+                       );
+                     })}
+                   </div>
+                 </div>
                </div>
              </motion.div>
           )}
@@ -103,7 +245,7 @@ export default function CollectionsPage({ categorySlug }: { categorySlug?: strin
         <div className={`w-full ${view === "grid" ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" : "flex flex-col gap-8"}`}>
           {displayedProducts.length === 0 ? (
             <div className="w-full text-center py-24 text-brand-text/50 col-span-full">
-              No products available in this category.
+              No products available matching your criteria.
             </div>
           ) : (
             displayedProducts.map((product) => (
