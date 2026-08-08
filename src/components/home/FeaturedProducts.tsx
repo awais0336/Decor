@@ -15,7 +15,7 @@ export function FeaturedProducts({ products }: { products: any[] }) {
     <section className="py-12 md:py-16 bg-brand-primary overflow-hidden border-t border-b border-brand-border/10">
       <div className="max-w-[1600px] mx-auto w-full mb-8 px-6 md:px-12 text-center">
         <h2 className="font-heading text-3xl md:text-4xl text-brand-text relative inline-block">
-          Featured
+          Featured Products
           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-[1px] bg-brand-gold"></div>
         </h2>
       </div>
