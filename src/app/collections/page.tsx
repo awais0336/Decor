@@ -9,12 +9,14 @@ export const metadata: Metadata = {
   description: "Browse our curated collections of luxury home decor.",
 };
 
-export default function CollectionsPage({ categorySlug }: { categorySlug?: string }) {
+import { BreadcrumbItem } from "@/components/ui/Breadcrumbs";
+
+export default function CollectionsPage({ categorySlug, breadcrumbs }: { categorySlug?: string, breadcrumbs?: BreadcrumbItem[] }) {
   return (
     <>
       <Navbar />
       <Suspense fallback={<div className="min-h-screen bg-brand-primary" />}>
-        <CollectionsClient categorySlug={categorySlug} />
+        <CollectionsClient categorySlug={categorySlug} breadcrumbs={breadcrumbs} />
       </Suspense>
       <Footer />
     </>

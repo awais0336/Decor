@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown, SlidersHorizontal, LayoutGrid, List, Check, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getStorefrontProducts } from "@/lib/actions/storefront";
+import { Breadcrumbs, BreadcrumbItem } from "@/components/ui/Breadcrumbs";
 
 const PRICE_RANGES = [
   { label: "Under Rs. 1,000", min: 0, max: 1000 },
@@ -15,7 +16,7 @@ const PRICE_RANGES = [
   { label: "Over Rs. 10,000", min: 10000, max: Infinity },
 ];
 
-export default function CollectionsPage({ categorySlug }: { categorySlug?: string } = {}) {
+export default function CollectionsPage({ categorySlug, breadcrumbs }: { categorySlug?: string, breadcrumbs?: BreadcrumbItem[] } = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -29,8 +30,8 @@ export default function CollectionsPage({ categorySlug }: { categorySlug?: strin
   const sortBy = searchParams.get("sort") || "newest";
 
   useEffect(() => {
-    getStorefrontProducts().then(setProducts);
-  }, []);
+    getStorefrontProducts(categorySlug).then(setProducts);
+  }, [categorySlug]);
 
   const uniqueCategories = useMemo(() => {
     const cats = new Set(products.map(p => p.category));
@@ -65,9 +66,7 @@ export default function CollectionsPage({ categorySlug }: { categorySlug?: strin
   const displayedProducts = useMemo(() => {
     let filtered = products;
 
-    if (categorySlug) {
-      filtered = filtered.filter(p => p.category.toLowerCase().replace(/\s+/g, "-") === categorySlug.toLowerCase());
-    } else if (selectedCategories.length > 0) {
+    if (selectedCategories.length > 0) {
       filtered = filtered.filter(p => selectedCategories.includes(p.category));
     }
 
@@ -111,6 +110,9 @@ export default function CollectionsPage({ categorySlug }: { categorySlug?: strin
       
       {/* Header */}
       <div className="pt-32 pb-16 px-6 md:px-12 max-w-[1600px] mx-auto w-full">
+        {breadcrumbs && breadcrumbs.length > 0 && (
+          <Breadcrumbs items={breadcrumbs} />
+        )}
         <h1 className="font-heading text-5xl md:text-6xl text-brand-text mb-6">
           {categorySlug ? categorySlug.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase()) : "Explore Collection"}
         </h1>

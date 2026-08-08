@@ -3,10 +3,10 @@
 
 import { createAdminClient } from "@/utils/supabase/server";
 
-export async function getStorefrontProducts() {
+export async function getStorefrontProducts(categorySlug?: string) {
   const supabase = createAdminClient();
   
-  const { data, error } = await supabase
+  let query = supabase
     .from("products")
     .select(`
       id,
@@ -19,8 +19,30 @@ export async function getStorefrontProducts() {
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
     `)
-    .eq("status", "active")
-    .order("created_at", { ascending: false });
+    .eq("status", "active");
+
+  if (categorySlug) {
+    const { data: descendants, error: rpcError } = await supabase.rpc('get_category_descendants', { slug_param: categorySlug });
+    
+    if (rpcError) {
+      console.error("[DEBUG] Error fetching category descendants via RPC (falling back to direct fetch):", rpcError);
+      
+      // Fallback: If RPC fails (e.g. schema cache issue), fetch the category ID and its immediate children
+      const { data: catData } = await supabase.from('categories').select('id').eq('slug', categorySlug).single();
+      if (catData) {
+        const { data: children } = await supabase.from('categories').select('id').eq('parent_id', catData.id);
+        const descendantIds = [catData.id, ...(children?.map((c: any) => c.id) || [])];
+        query = query.in("category_id", descendantIds);
+      } else {
+        return [];
+      }
+    } else if (descendants && descendants.length > 0) {
+      const descendantIds = descendants.map((d: any) => d.id);
+      query = query.in("category_id", descendantIds);
+    }
+  }
+
+  const { data, error } = await query.order("created_at", { ascending: false });
 
   if (error) {
     console.error("Error fetching storefront products:", JSON.stringify(error, null, 2));
@@ -230,4 +252,80 @@ export async function getStoreSettings() {
   } catch (e) {
     return null;
   }
+}
+
+export async function getTopLevelCategories() {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, image_url, parent_id")
+    .is("parent_id", null)
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching top-level categories:", error);
+    return [];
+  }
+  return data;
+}
+
+export async function getAllCategories() {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, image_url, parent_id")
+    .order("name");
+
+  if (error) {
+    console.error("Error fetching all categories:", error);
+    return [];
+  }
+  return data;
+}
+
+export async function getCategoryBySlug(slug: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, image_url, parent_id")
+    .eq("slug", slug)
+    .single();
+
+  if (error) {
+    console.error(`Error fetching category ${slug}:`, error);
+    return null;
+  }
+  return data;
+}
+
+export async function getCategoryChildren(parentId: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, image_url, parent_id")
+    .eq("parent_id", parentId)
+    .order("name");
+
+  if (error) {
+    console.error(`Error fetching children for category ${parentId}:`, error);
+    return [];
+  }
+  return data;
+}
+
+export async function getCategoriesBySlugs(slugs: string[]) {
+  if (!slugs || slugs.length === 0) return [];
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, image_url, parent_id")
+    .in("slug", slugs);
+
+  if (error) {
+    console.error("Error fetching categories by slugs:", error);
+    return [];
+  }
+  
+  // Sort them to match the order of the slugs array
+  return slugs.map(slug => data.find(c => c.slug === slug)).filter(Boolean);
 }
