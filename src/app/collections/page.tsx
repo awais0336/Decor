@@ -3,15 +3,19 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import { BreadcrumbItem } from "@/components/ui/Breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Collections | Decornish",
   description: "Browse our curated collections of luxury home decor.",
 };
 
-import { BreadcrumbItem } from "@/components/ui/Breadcrumbs";
+interface CollectionsPageProps {
+  categorySlug?: string;
+  breadcrumbs?: BreadcrumbItem[];
+}
 
-export default function CollectionsPage({ categorySlug, breadcrumbs }: { categorySlug?: string, breadcrumbs?: BreadcrumbItem[] }) {
+export default function CollectionsPage({ categorySlug, breadcrumbs }: CollectionsPageProps) {
   return (
     <>
       <Navbar />

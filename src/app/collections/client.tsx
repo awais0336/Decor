@@ -17,7 +17,12 @@ const PRICE_RANGES = [
   { label: "Over Rs. 10,000", min: 10000, max: Infinity },
 ];
 
-export default function CollectionsPage({ categorySlug, breadcrumbs }: { categorySlug?: string, breadcrumbs?: BreadcrumbItem[] } = {}) {
+interface CollectionsClientProps {
+  categorySlug?: string;
+  breadcrumbs?: BreadcrumbItem[];
+}
+
+export default function CollectionsClient({ categorySlug, breadcrumbs }: CollectionsClientProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
