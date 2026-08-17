@@ -253,7 +253,7 @@ export default function CollectionsClient({ categorySlug, breadcrumbs, initialPr
               No products available matching your criteria.
             </div>
           ) : (
-            displayedProducts.map((product) => (
+            displayedProducts.map((product, idx) => (
               <Link 
                 key={product.id} 
                 href={`/product/${product.id}`}
@@ -267,6 +267,7 @@ export default function CollectionsClient({ categorySlug, breadcrumbs, initialPr
                     src={product.image}
                     alt={product.name}
                     fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={idx < 4}
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />

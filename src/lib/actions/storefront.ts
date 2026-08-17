@@ -26,23 +26,29 @@ export async function getStorefrontProducts(categorySlug?: string) {
         .eq("status", "active");
 
       if (categorySlug) {
-        const { data: descendants, error: rpcError } = await supabase.rpc('get_category_descendants', { slug_param: categorySlug });
+        // Find descendants in memory to avoid missing RPC errors and improve performance
+        const allCategories = await getAllCategories();
+        const targetCategory = allCategories.find((c: any) => c.slug === categorySlug);
         
-        if (rpcError) {
-          console.error("[DEBUG] Error fetching category descendants via RPC (falling back to direct fetch):", rpcError);
+        if (targetCategory) {
+          const descendantIds = new Set<string>();
+          descendantIds.add(targetCategory.id);
           
-          // Fallback: If RPC fails (e.g. schema cache issue), fetch the category ID and its immediate children
-          const { data: catData } = await supabase.from('categories').select('id').eq('slug', categorySlug).single();
-          if (catData) {
-            const { data: children } = await supabase.from('categories').select('id').eq('parent_id', catData.id);
-            const descendantIds = [catData.id, ...(children?.map((c: any) => c.id) || [])];
-            query = query.in("category_id", descendantIds);
-          } else {
-            return [];
-          }
-        } else if (descendants && descendants.length > 0) {
-          const descendantIds = descendants.map((d: any) => d.id);
-          query = query.in("category_id", descendantIds);
+          // Helper to find children recursively
+          const findChildren = (parentId: string) => {
+            const children = allCategories.filter((c: any) => c.parent_id === parentId);
+            for (const child of children) {
+              if (!descendantIds.has(child.id)) {
+                descendantIds.add(child.id);
+                findChildren(child.id);
+              }
+            }
+          };
+          
+          findChildren(targetCategory.id);
+          query = query.in("category_id", Array.from(descendantIds));
+        } else {
+          return [];
         }
       }
 
@@ -108,7 +114,7 @@ export async function searchStorefrontProducts(query: string) {
   }
 
   // Format the data to match the frontend components expectations
-  return data?.map((p: any) => {
+  return (data as any[])?.map((p: any) => {
     const minVariantPrice = p.variants?.length > 0 ? Math.min(...p.variants.map((v: any) => Number(v.price_adjustment))) : 0;
     const displayPrice = p.base_price > 0 
       ? `Rs. ${p.base_price.toLocaleString()}`

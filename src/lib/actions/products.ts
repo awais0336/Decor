@@ -92,7 +92,7 @@ export async function createProduct(formData: FormData) {
 
     revalidatePath("/admin/products");
     revalidatePath("/admin/collections");
-    revalidateTag("products");
+    revalidateTag("products", {});
     return { success: true };
   } catch (error: any) {
     console.error("Unhandled error in createProduct:", error);
@@ -149,7 +149,7 @@ export async function deleteProduct(id: string) {
 
   revalidatePath("/admin/products");
   revalidatePath("/admin/collections");
-  revalidateTag("products");
+  revalidateTag("products", {});
   return { success: true };
 }
 
@@ -277,7 +277,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
     revalidatePath("/admin/products");
     revalidatePath("/admin/collections");
-    revalidateTag("products");
+    revalidateTag("products", {});
     return { success: true };
   } catch (error: any) {
     return { error: error.message };
