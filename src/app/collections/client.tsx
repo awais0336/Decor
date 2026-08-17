@@ -20,24 +20,21 @@ const PRICE_RANGES = [
 interface CollectionsClientProps {
   categorySlug?: string;
   breadcrumbs?: BreadcrumbItem[];
+  initialProducts?: any[];
 }
 
-export default function CollectionsClient({ categorySlug, breadcrumbs }: CollectionsClientProps = {}) {
+export default function CollectionsClient({ categorySlug, breadcrumbs, initialProducts = [] }: CollectionsClientProps = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [view, setView] = useState<"grid" | "list">("grid");
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>(initialProducts);
 
   // State from URL
   const selectedCategories = searchParams.getAll("category");
   const selectedPriceRanges = searchParams.getAll("price");
   const sortBy = searchParams.get("sort") || "newest";
-
-  useEffect(() => {
-    getStorefrontProducts(categorySlug).then(setProducts);
-  }, [categorySlug]);
 
   const uniqueCategories = useMemo(() => {
     const cats = new Set(products.map(p => p.category));

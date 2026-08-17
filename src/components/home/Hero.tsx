@@ -47,6 +47,7 @@ export function Hero() {
           alt="Luxury Living Room"
           fill
           priority
+          quality={90}
           className="object-cover opacity-90 origin-center"
           sizes="100vw"
         />

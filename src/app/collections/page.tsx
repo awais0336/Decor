@@ -15,12 +15,16 @@ interface CollectionsPageProps {
   breadcrumbs?: BreadcrumbItem[];
 }
 
-export default function CollectionsPage({ categorySlug, breadcrumbs }: CollectionsPageProps) {
+import { getStorefrontProducts } from "@/lib/actions/storefront";
+
+export default async function CollectionsPage({ categorySlug, breadcrumbs }: CollectionsPageProps) {
+  const initialProducts = await getStorefrontProducts(categorySlug);
+  
   return (
     <>
       <Navbar />
       <Suspense fallback={<div className="min-h-screen bg-brand-primary" />}>
-        <CollectionsClient categorySlug={categorySlug} breadcrumbs={breadcrumbs} />
+        <CollectionsClient categorySlug={categorySlug} breadcrumbs={breadcrumbs} initialProducts={initialProducts} />
       </Suspense>
       <Footer />
     </>

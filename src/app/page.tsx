@@ -45,15 +45,8 @@ export default async function Home() {
     return acc;
   }, {});
 
-  // Get the names of all explicitly defined top-level categories
-  const topLevelCategoryNames = allCategories
-    .filter(c => c.parent_id === null)
-    .map(c => c.name);
-
-  // Only display sections that are true top-level categories
-  const categoriesToDisplay = Object.keys(categoriesMap).filter(name => 
-    topLevelCategoryNames.includes(name)
-  );
+  // Display all resolved top-level categories that have products
+  const categoriesToDisplay = Object.keys(categoriesMap);
 
   return (
     <main className="flex min-h-screen flex-col bg-brand-primary">

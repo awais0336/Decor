@@ -108,7 +108,7 @@ export async function getCategories() {
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from("categories")
-    .select("*")
+    .select("id, name, slug, parent_id, image_url, created_at")
     .order("created_at", { ascending: false });
 
   if (error) {

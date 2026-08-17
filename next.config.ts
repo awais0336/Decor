@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
 
   serverExternalPackages: [],
   images: {
+    qualities: [25, 50, 75, 90, 100],
     remotePatterns: [
       {
         protocol: "https",

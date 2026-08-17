@@ -26,7 +26,7 @@ export interface CheckoutEmailPayload {
 export async function sendCheckoutEmail(payload: CheckoutEmailPayload) {
   // Check if credentials exist
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || process.env.EMAIL_PASS.includes("placeholder")) {
-    console.log("[Email Service] Gmail App Password is missing or placeholder. Skipping actual email dispatch.");
+
     return { success: true, simulated: true };
   }
 
@@ -210,7 +210,7 @@ Need help? Contact our support team at ${siteConfig.contactEmail}
     await transporter.sendMail(adminMailOptions);
     await transporter.sendMail(customerMailOptions);
 
-    console.log(`[Email Service] Emails successfully sent to ${payload.email} and Admin`);
+
     return { success: true };
   } catch (err: any) {
     console.error("[Email Service] Failed to send email:", err);
@@ -226,7 +226,7 @@ export interface ContactEmailPayload {
 
 export async function sendContactEmail(payload: ContactEmailPayload) {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || process.env.EMAIL_PASS.includes("placeholder")) {
-    console.log("[Email Service] Gmail App Password is missing or placeholder. Skipping actual email dispatch.");
+
     return { success: true, simulated: true };
   }
 
@@ -328,7 +328,7 @@ Need help? Contact our support team at ${siteConfig.contactEmail}
     await transporter.sendMail(teamMailOptions);
     await transporter.sendMail(clientMailOptions);
 
-    console.log(`[Email Service] Emails successfully sent to ${payload.email} and Admin`);
+
     return { success: true };
   } catch (err: any) {
     console.error("[Email Service] Failed to send email:", err);
