@@ -44,9 +44,3 @@ next-env.d.ts
 AGENTS.md
 CLAUDE.md
 .gemini/
-
-# Scratch Scripts
-clear_orders.js
-list_bucket.js
-list_products.js
-test_revalidate.ts
