@@ -118,7 +118,7 @@ export function CategorySlider({
                     {/* Quick Add Button */}
                     {product.inStock ? (
                       <button 
-                        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-brand-text px-6 py-3 rounded-full font-button font-medium text-sm flex items-center gap-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:bg-brand-text hover:text-white"
+                        className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-brand-text px-6 py-3 rounded-full font-button font-medium text-sm items-center gap-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg hover:bg-brand-text hover:text-white"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -129,7 +129,7 @@ export function CategorySlider({
                         Quick Add
                       </button>
                     ) : (
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 text-brand-text/50 px-6 py-3 rounded-full font-button font-medium text-sm flex items-center gap-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg cursor-not-allowed">
+                      <div className="hidden md:flex absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 text-brand-text/50 px-6 py-3 rounded-full font-button font-medium text-sm items-center gap-2 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg cursor-not-allowed">
                         Out of Stock
                       </div>
                     )}

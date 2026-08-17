@@ -102,8 +102,9 @@ export function FeaturedCollections() {
                   src={collection.image}
                   alt={collection.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={index < 2}
                   className="collection-image object-cover scale-[1.15] transition-transform duration-700 group-hover:scale-[1.05]"
-                  sizes="(max-w-768px) 100vw, 50vw"
                 />
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-700" />
               </div>

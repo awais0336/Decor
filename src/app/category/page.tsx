@@ -28,7 +28,7 @@ export default async function CategoriesPage() {
           <h1 className="text-3xl font-light text-stone-900 mb-8">All Categories</h1>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categories.map((category) => (
+            {categories.map((category, idx) => (
               <Link 
                 key={category.id} 
                 href={`/category/${category.slug}`}
@@ -39,6 +39,8 @@ export default async function CategoriesPage() {
                     src={category.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600"}
                     alt={category.name}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={idx < 4}
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>

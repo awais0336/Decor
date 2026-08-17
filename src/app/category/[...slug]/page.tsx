@@ -50,7 +50,7 @@ export default async function CategoryCatchAllPage({ params }: { params: Promise
             <h1 className="text-3xl font-light text-stone-900 mb-8">{category.name} Categories</h1>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {children.map((child) => (
+              {children.map((child, idx) => (
                 <Link 
                   key={child.id} 
                   href={`${currentPath}/${child.slug}`}
@@ -61,6 +61,8 @@ export default async function CategoryCatchAllPage({ params }: { params: Promise
                       src={child.image_url || category.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600"}
                       alt={child.name}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      priority={idx < 4}
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>

@@ -107,7 +107,7 @@ export function FeaturedProducts({ products }: { products: any[] }) {
                   className="object-cover transition-transform duration-700 group-hover/item:scale-110"
                   sizes="(max-width: 768px) 160px, 200px"
                   draggable="false"
-                  priority={true} // Eager load to prevent blank pops on fast scroll
+                  priority={idx < 4}
                 />
               </div>
               <div className="text-center">
