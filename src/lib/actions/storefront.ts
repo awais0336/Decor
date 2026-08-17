@@ -4,76 +4,81 @@
 import { createAdminClient } from "@/utils/supabase/server";
 import { unstable_cache } from "next/cache";
 
-export const getStorefrontProducts = unstable_cache(
-  async (categorySlug?: string) => {
-    const supabase = createAdminClient();
-  
-  let query = supabase
-    .from("products")
-    .select(`
-      id,
-      name,
-      base_price,
-      stock_quantity,
-      status,
-      created_at,
-      is_featured,
-      category:categories(name),
-      images:product_images(image_url),
-      variants(id, name, stock_quantity, image_url, price_adjustment)
-    `)
-    .eq("status", "active");
-
-  if (categorySlug) {
-    const { data: descendants, error: rpcError } = await supabase.rpc('get_category_descendants', { slug_param: categorySlug });
+export async function getStorefrontProducts(categorySlug?: string) {
+  return unstable_cache(
+    async () => {
+      const supabase = createAdminClient();
     
-    if (rpcError) {
-      console.error("[DEBUG] Error fetching category descendants via RPC (falling back to direct fetch):", rpcError);
-      
-      // Fallback: If RPC fails (e.g. schema cache issue), fetch the category ID and its immediate children
-      const { data: catData } = await supabase.from('categories').select('id').eq('slug', categorySlug).single();
-      if (catData) {
-        const { data: children } = await supabase.from('categories').select('id').eq('parent_id', catData.id);
-        const descendantIds = [catData.id, ...(children?.map((c: any) => c.id) || [])];
-        query = query.in("category_id", descendantIds);
-      } else {
+      let query = supabase
+        .from("products")
+        .select(`
+          id,
+          name,
+          base_price,
+          stock_quantity,
+          status,
+          created_at,
+          is_featured,
+          category:categories(name),
+          images:product_images(image_url),
+          variants(id, name, stock_quantity, image_url, price_adjustment)
+        `)
+        .eq("status", "active");
+
+      if (categorySlug) {
+        const { data: descendants, error: rpcError } = await supabase.rpc('get_category_descendants', { slug_param: categorySlug });
+        
+        if (rpcError) {
+          console.error("[DEBUG] Error fetching category descendants via RPC (falling back to direct fetch):", rpcError);
+          
+          // Fallback: If RPC fails (e.g. schema cache issue), fetch the category ID and its immediate children
+          const { data: catData } = await supabase.from('categories').select('id').eq('slug', categorySlug).single();
+          if (catData) {
+            const { data: children } = await supabase.from('categories').select('id').eq('parent_id', catData.id);
+            const descendantIds = [catData.id, ...(children?.map((c: any) => c.id) || [])];
+            query = query.in("category_id", descendantIds);
+          } else {
+            return [];
+          }
+        } else if (descendants && descendants.length > 0) {
+          const descendantIds = descendants.map((d: any) => d.id);
+          query = query.in("category_id", descendantIds);
+        }
+      }
+
+      const { data, error } = await query.order("created_at", { ascending: false });
+
+      if (error) {
+        console.warn("[getStorefrontProducts] Error:", JSON.stringify(error, null, 2), error);
         return [];
       }
-    } else if (descendants && descendants.length > 0) {
-      const descendantIds = descendants.map((d: any) => d.id);
-      query = query.in("category_id", descendantIds);
-    }
-  }
 
-  const { data, error } = await query.order("created_at", { ascending: false });
+      // Format the data to match the frontend components expectations
+      return data?.map((p: any) => {
+        const minVariantPrice = p.variants?.length > 0 ? Math.min(...p.variants.map((v: any) => Number(v.price_adjustment))) : 0;
+        const displayPrice = p.base_price > 0 
+          ? `Rs. ${p.base_price.toLocaleString()}`
+          : (minVariantPrice > 0 ? `From Rs. ${minVariantPrice.toLocaleString()}` : "Price Varies");
 
-  if (error) {
-    console.warn("[getStorefrontProducts] Error:", JSON.stringify(error, null, 2), error);
-    return [];
-  }
-
-  // Format the data to match the frontend components expectations
-  return data?.map((p: any) => {
-    const minVariantPrice = p.variants?.length > 0 ? Math.min(...p.variants.map((v: any) => Number(v.price_adjustment))) : 0;
-    const displayPrice = p.base_price > 0 
-      ? `Rs. ${p.base_price.toLocaleString()}`
-      : (minVariantPrice > 0 ? `From Rs. ${minVariantPrice.toLocaleString()}` : "Price Varies");
-
-    return {
-      id: p.id,
-      name: p.name,
-      category: (p.category as any)?.name || "Decor",
-      price: displayPrice,
-      rawPrice: p.base_price || 0,
-      image: p.images?.[0]?.image_url || p.variants?.find((v: any) => v.image_url)?.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600",
-      inStock: p.variants && p.variants.length > 0 
-        ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
-        : true,
-      createdAt: p.created_at,
-      is_featured: p.is_featured,
-    };
-  });
-}, ['storefront-products'], { revalidate: 3600, tags: ['products'] });
+        return {
+          id: p.id,
+          name: p.name,
+          category: (p.category as any)?.name || "Decor",
+          price: displayPrice,
+          rawPrice: p.base_price || 0,
+          image: p.images?.[0]?.image_url || p.variants?.find((v: any) => v.image_url)?.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600",
+          inStock: p.variants && p.variants.length > 0 
+            ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
+            : true,
+          createdAt: p.created_at,
+          is_featured: p.is_featured,
+        };
+      });
+    },
+    ['storefront-products', categorySlug || 'all'],
+    { revalidate: 3600, tags: ['products'] }
+  )();
+}
 
 
 

@@ -2,7 +2,7 @@
  
 
 import { createClient, createAdminClient } from "@/utils/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function createProduct(formData: FormData) {
   try {
@@ -92,6 +92,7 @@ export async function createProduct(formData: FormData) {
 
     revalidatePath("/admin/products");
     revalidatePath("/admin/collections");
+    revalidateTag("products");
     return { success: true };
   } catch (error: any) {
     console.error("Unhandled error in createProduct:", error);
@@ -148,6 +149,7 @@ export async function deleteProduct(id: string) {
 
   revalidatePath("/admin/products");
   revalidatePath("/admin/collections");
+  revalidateTag("products");
   return { success: true };
 }
 
@@ -275,6 +277,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
     revalidatePath("/admin/products");
     revalidatePath("/admin/collections");
+    revalidateTag("products");
     return { success: true };
   } catch (error: any) {
     return { error: error.message };
