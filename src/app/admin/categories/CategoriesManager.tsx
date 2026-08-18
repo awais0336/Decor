@@ -75,6 +75,7 @@ export default function CategoriesManager({ initialCategories }: { initialCatego
                                 src={cat.image_url} 
                                 alt={cat.name} 
                                 fill 
+                                sizes="40px"
                                 className="object-cover"
                               />
                             </div>
