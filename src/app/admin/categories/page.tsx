@@ -1,6 +1,8 @@
 import { getCategories } from "@/lib/actions/categories";
 import CategoriesManager from "./CategoriesManager";
 
+export const dynamic = 'force-dynamic';
+
 export default async function CategoriesPage() {
   const categories = await getCategories();
 

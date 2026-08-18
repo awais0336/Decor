@@ -5,6 +5,8 @@ import { Package, Trash2, Edit } from "lucide-react";
 import Link from "next/link";
 import ProductForm from "./ProductForm";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductsPage() {
   const products = await getProducts();
   const categories = await getCategories();
