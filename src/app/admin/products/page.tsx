@@ -1,9 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProducts, deleteProductAction } from "@/lib/actions/products";
+import { getProducts } from "@/lib/actions/products";
 import { getCategories } from "@/lib/actions/categories";
-import { Package, Trash2, Edit } from "lucide-react";
+import { Package, Edit } from "lucide-react";
 import Link from "next/link";
 import ProductForm from "./ProductForm";
+import DeleteProductButton from "./DeleteProductButton";
 
 export const dynamic = 'force-dynamic';
 
@@ -91,12 +92,7 @@ export default async function ProductsPage() {
                               >
                                 <Edit className="h-4 w-4" />
                               </Link>
-                              <form action={deleteProductAction}>
-                                <input type="hidden" name="id" value={product.id} />
-                                <button type="submit" className="text-red-500 hover:text-red-700 transition-colors p-2">
-                                  <Trash2 className="h-4 w-4" />
-                                </button>
-                              </form>
+                              <DeleteProductButton id={product.id} />
                             </div>
                           </td>
                         </tr>
