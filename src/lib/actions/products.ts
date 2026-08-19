@@ -38,6 +38,8 @@ export async function createProduct(formData: FormData) {
     const design_group = designGroupStr ? designGroupStr.toLowerCase().trim().replace(/[\s_]+/g, '-') : null;
     const sizeLabelStr = formData.get("size_label") as string;
     const size_label = sizeLabelStr ? sizeLabelStr.trim() : null;
+    const siblingLabelStr = formData.get("sibling_label") as string;
+    const sibling_label = siblingLabelStr ? siblingLabelStr.trim() : null;
     
     // Insert Product
     const { data: product, error: productError } = await supabase
@@ -52,7 +54,8 @@ export async function createProduct(formData: FormData) {
           is_featured, 
           status,
           design_group,
-          size_label
+          size_label,
+          sibling_label
         }
       ])
       .select()
@@ -229,10 +232,12 @@ export async function updateProduct(id: string, formData: FormData) {
     const design_group = designGroupStr ? designGroupStr.toLowerCase().trim().replace(/[\s_]+/g, '-') : null;
     const sizeLabelStr = formData.get("size_label") as string;
     const size_label = sizeLabelStr ? sizeLabelStr.trim() : null;
+    const siblingLabelStr = formData.get("sibling_label") as string;
+    const sibling_label = siblingLabelStr ? siblingLabelStr.trim() : null;
     
     const { error: productError } = await supabase
       .from("products")
-      .update({ name, slug, description, base_price, category_id, status, is_featured, design_group, size_label })
+      .update({ name, slug, description, base_price, category_id, status, is_featured, design_group, size_label, sibling_label })
       .eq("id", id);
 
     if (productError) return { error: productError.message };

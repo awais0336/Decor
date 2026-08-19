@@ -22,7 +22,8 @@ export async function getStorefrontProducts(categorySlug?: string) {
           design_group,
           category:categories(name),
           images:product_images(image_url),
-          variants(id, name, stock_quantity, image_url, price_adjustment)
+          variants(id, name, stock_quantity, image_url, price_adjustment),
+          sibling_label
         `)
         .eq("status", "active");
 
@@ -89,7 +90,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
           name: p.name,
           category: (p.category as any)?.name || "Decor",
           price: displayPrice,
-          rawPrice: p.base_price || 0,
+          rawPrice: p.base_price > 0 ? p.base_price : (minVariantPrice > 0 ? minVariantPrice : 0),
           image: p.images?.[0]?.image_url || p.variants?.find((v: any) => v.image_url)?.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600",
           inStock: p.variants && p.variants.length > 0 
             ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
@@ -98,6 +99,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
           is_featured: p.is_featured,
           design_group: p.design_group,
           siblingCount: p.design_group ? (siblingCounts[p.design_group] || 0) : 0,
+          siblingLabel: p.sibling_label || "Sizes",
         };
       });
     },
@@ -126,7 +128,8 @@ export async function searchStorefrontProducts(query: string) {
       design_group,
       category:categories(name),
       images:product_images(image_url),
-      variants(id, name, stock_quantity, image_url, price_adjustment)
+      variants(id, name, stock_quantity, image_url, price_adjustment),
+      sibling_label
     `);
 
   if (error) {
@@ -146,7 +149,7 @@ export async function searchStorefrontProducts(query: string) {
       name: p.name,
       category: (p.category as any)?.name || "Decor",
       price: displayPrice,
-      rawPrice: p.base_price || 0,
+      rawPrice: p.base_price > 0 ? p.base_price : (minVariantPrice > 0 ? minVariantPrice : 0),
       image: p.images?.[0]?.image_url || p.variants?.find((v: any) => v.image_url)?.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600",
       inStock: p.variants && p.variants.length > 0 
         ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
@@ -154,6 +157,7 @@ export async function searchStorefrontProducts(query: string) {
       createdAt: p.created_at,
       design_group: p.design_group,
       siblingCount: 0, // Simplified for search, can enhance later
+      siblingLabel: p.sibling_label || "Sizes",
     };
   });
 }
@@ -172,6 +176,7 @@ export async function getStorefrontProduct(id: string) {
       status,
       design_group,
       size_label,
+      sibling_label,
       category:categories(name),
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
@@ -207,6 +212,7 @@ export async function getStorefrontProduct(id: string) {
       : true,
     design_group: data.design_group,
     size_label: data.size_label,
+    sibling_label: data.sibling_label || "Sizes",
   };
 }
 

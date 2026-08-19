@@ -135,15 +135,31 @@ export default function ProductForm({ categories, designGroups = [] }: { categor
           <p className="text-[10px] text-muted-foreground">Used to group different sizes of the same design together.</p>
         </div>
         <div className="space-y-2">
-          <label htmlFor="size_label" className="text-sm font-medium">Size Label (Optional)</label>
+          <label htmlFor="size_label" className="text-sm font-medium">Size/Variant Label (Optional)</label>
           <input 
             type="text" 
             id="size_label" 
             name="size_label" 
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="e.g. 2 x 3 ft"
+            placeholder="e.g. 2 x 3 ft, Gold, Medium"
           />
           <p className="text-[10px] text-muted-foreground">The display label for this specific size.</p>
+        </div>
+        <div className="space-y-2 col-span-1 md:col-span-2">
+          <label htmlFor="sibling_label" className="text-sm font-medium">Group Label Type (Optional)</label>
+          <select 
+            id="sibling_label" 
+            name="sibling_label"
+            defaultValue="Sizes"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="Sizes">Sizes</option>
+            <option value="Designs">Designs</option>
+            <option value="Colors">Colors</option>
+            <option value="Styles">Styles</option>
+            <option value="Variants">Variants</option>
+          </select>
+          <p className="text-[10px] text-muted-foreground">What word to use in the catalog badge (e.g. "9 Sizes Available" vs "9 Designs Available")</p>
         </div>
       </div>
 
