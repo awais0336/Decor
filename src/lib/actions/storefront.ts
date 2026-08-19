@@ -333,7 +333,7 @@ export async function getProductSiblings(designGroup: string, currentProductId: 
       stock_quantity,
       size_label,
       images:product_images(image_url),
-      variants(stock_quantity)
+      variants(stock_quantity, price_adjustment, image_url)
     `)
     .eq("design_group", designGroup)
     .neq("id", currentProductId)
@@ -342,13 +342,21 @@ export async function getProductSiblings(designGroup: string, currentProductId: 
 
   if (error) return [];
   
-  return data.map((p: any) => ({
-    id: p.id,
-    name: p.name,
-    size_label: p.size_label,
-    price: p.base_price,
-    image: p.images?.[0]?.image_url,
-    inStock: p.stock_quantity > 0 || (p.variants?.some((v: any) => v.stock_quantity > 0))
-  }));
+  return data.map((p: any) => {
+    const minVariantPrice = p.variants?.length > 0 ? Math.min(...p.variants.map((v: any) => Number(v.price_adjustment))) : 0;
+    const finalPrice = p.base_price > 0 
+      ? `Rs. ${p.base_price.toLocaleString()}`
+      : (minVariantPrice > 0 ? `From Rs. ${minVariantPrice.toLocaleString()}` : "Price Varies");
+    const imageUrl = p.images?.[0]?.image_url || p.variants?.find((v: any) => v.image_url)?.image_url || "https://images.unsplash.com/photo-1612196808214-b8e1d6145a8c?auto=format&fit=crop&q=80&w=600";
+
+    return {
+      id: p.id,
+      name: p.name,
+      size_label: p.size_label,
+      price: finalPrice,
+      image: imageUrl,
+      inStock: p.stock_quantity > 0 || (p.variants?.some((v: any) => v.stock_quantity > 0))
+    };
+  });
 }
 

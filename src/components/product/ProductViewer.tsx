@@ -135,7 +135,7 @@ export function ProductViewer({ product }: { product: any }) {
                       {sibling.size_label || sibling.name}
                     </span>
                     <span className="text-xs font-medium mt-1">
-                      Rs. {sibling.price.toLocaleString()}
+                      {sibling.price}
                     </span>
                   </div>
                 </Link>
