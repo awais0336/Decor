@@ -20,7 +20,10 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     ? await import("@/lib/actions/storefront").then(m => m.getProductSiblings(product.design_group, product.id))
     : [];
     
-  product.siblings = siblings;
+  const productWithSiblings = {
+    ...product,
+    siblings
+  };
 
   return (
     <main className="flex min-h-screen flex-col bg-brand-primary">
@@ -31,7 +34,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
           <ArrowLeft className="w-4 h-4" /> Back to Home
         </Link>
         
-        <ProductViewer product={product} />
+        <ProductViewer product={productWithSiblings} />
         
         <ProductReviews productId={product.id} productName={product.name} />
       </div>
