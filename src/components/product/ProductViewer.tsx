@@ -113,28 +113,28 @@ export function ProductViewer({ product }: { product: any }) {
         {product.siblings && product.siblings.length > 0 && (
           <div className="mb-12 pt-8 border-t border-brand-border/20">
             <span className="block text-sm font-semibold uppercase tracking-widest text-brand-text mb-4">Also available in:</span>
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col gap-3">
               {product.siblings.map((sibling: any) => (
                 <Link
                   href={`/product/${sibling.id}`}
                   key={sibling.id}
-                  className="flex flex-col gap-2 p-3 border border-brand-border/40 hover:border-brand-gold bg-brand-secondary/30 text-brand-text/80 hover:text-brand-text transition-all min-w-[100px] rounded-lg group"
+                  className="flex items-center gap-4 p-3 border border-brand-border/40 hover:border-brand-gold bg-brand-secondary/30 text-brand-text/80 hover:text-brand-text transition-all rounded-lg group"
                 >
                   {sibling.image && (
-                    <div className="w-full aspect-square relative bg-brand-secondary overflow-hidden shrink-0 rounded-md">
+                    <div className="w-16 h-16 relative bg-brand-secondary overflow-hidden shrink-0 rounded-md border border-brand-border/20">
                       <Image 
                         src={sibling.image} 
                         alt={sibling.name}
-                        fill sizes="100px"
+                        fill sizes="64px"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     </div>
                   )}
                   <div className="flex flex-col">
-                    <span className="text-xs font-semibold w-full">
+                    <span className="text-sm font-semibold">
                       {sibling.size_label || sibling.name}
                     </span>
-                    <span className="text-xs font-medium mt-1">
+                    <span className="text-xs font-medium mt-1 text-brand-text/60">
                       {sibling.price}
                     </span>
                   </div>
