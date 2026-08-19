@@ -16,6 +16,12 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
+  const siblings = product.design_group 
+    ? await import("@/lib/actions/storefront").then(m => m.getProductSiblings(product.design_group, product.id))
+    : [];
+    
+  product.siblings = siblings;
+
   return (
     <main className="flex min-h-screen flex-col bg-brand-primary">
       <Navbar />

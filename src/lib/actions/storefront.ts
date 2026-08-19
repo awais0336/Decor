@@ -19,6 +19,7 @@ export async function getStorefrontProducts(categorySlug?: string) {
           status,
           created_at,
           is_featured,
+          design_group,
           category:categories(name),
           images:product_images(image_url),
           variants(id, name, stock_quantity, image_url, price_adjustment)
@@ -59,6 +60,23 @@ export async function getStorefrontProducts(categorySlug?: string) {
         return [];
       }
 
+      const designGroups = Array.from(new Set(data?.map(p => p.design_group).filter(Boolean)));
+      let siblingCounts: Record<string, number> = {};
+
+      if (designGroups.length > 0) {
+        const { data: siblingData } = await supabase
+          .from("products")
+          .select("design_group")
+          .in("design_group", designGroups)
+          .eq("status", "active");
+          
+        if (siblingData) {
+          siblingData.forEach(row => {
+            siblingCounts[row.design_group] = (siblingCounts[row.design_group] || 0) + 1;
+          });
+        }
+      }
+
       // Format the data to match the frontend components expectations
       return data?.map((p: any) => {
         const minVariantPrice = p.variants?.length > 0 ? Math.min(...p.variants.map((v: any) => Number(v.price_adjustment))) : 0;
@@ -78,6 +96,8 @@ export async function getStorefrontProducts(categorySlug?: string) {
             : true,
           createdAt: p.created_at,
           is_featured: p.is_featured,
+          design_group: p.design_group,
+          siblingCount: p.design_group ? (siblingCounts[p.design_group] || 0) : 0,
         };
       });
     },
@@ -103,6 +123,7 @@ export async function searchStorefrontProducts(query: string) {
       description,
       status,
       created_at,
+      design_group,
       category:categories(name),
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
@@ -131,6 +152,8 @@ export async function searchStorefrontProducts(query: string) {
         ? p.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
         : true,
       createdAt: p.created_at,
+      design_group: p.design_group,
+      siblingCount: 0, // Simplified for search, can enhance later
     };
   });
 }
@@ -147,6 +170,8 @@ export async function getStorefrontProduct(id: string) {
       base_price,
       stock_quantity,
       status,
+      design_group,
+      size_label,
       category:categories(name),
       images:product_images(image_url),
       variants(id, name, stock_quantity, image_url, price_adjustment)
@@ -180,6 +205,8 @@ export async function getStorefrontProduct(id: string) {
     inStock: data.variants && data.variants.length > 0 
       ? data.variants.reduce((sum: number, v: any) => sum + (v.stock_quantity || 0), 0) > 0
       : true,
+    design_group: data.design_group,
+    size_label: data.size_label,
   };
 }
 
@@ -286,3 +313,36 @@ export async function getCategoriesBySlugs(slugs: string[]) {
   // Sort them to match the order of the slugs array
   return slugs.map(slug => data.find(c => c.slug === slug)).filter(Boolean);
 }
+
+export async function getProductSiblings(designGroup: string, currentProductId: string) {
+  if (!designGroup) return [];
+  
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select(`
+      id,
+      name,
+      base_price,
+      stock_quantity,
+      size_label,
+      images:product_images(image_url),
+      variants(stock_quantity)
+    `)
+    .eq("design_group", designGroup)
+    .neq("id", currentProductId)
+    .eq("status", "active")
+    .order("base_price", { ascending: true });
+
+  if (error) return [];
+  
+  return data.map((p: any) => ({
+    id: p.id,
+    name: p.name,
+    size_label: p.size_label,
+    price: p.base_price,
+    image: p.images?.[0]?.image_url,
+    inStock: p.stock_quantity > 0 || (p.variants?.some((v: any) => v.stock_quantity > 0))
+  }));
+}
+

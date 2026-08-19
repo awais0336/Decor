@@ -1,4 +1,4 @@
-import { getProductById } from "@/lib/actions/products";
+import { getProductById, getDesignGroups } from "@/lib/actions/products";
 import { getCategories } from "@/lib/actions/categories";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { notFound, redirect } from "next/navigation";
@@ -10,6 +10,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const resolvedParams = await params;
   const product = await getProductById(resolvedParams.id);
   const categories = await getCategories();
+  const designGroups = await getDesignGroups();
 
   if (!product) {
     notFound();
@@ -34,7 +35,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
           <CardTitle>Product Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <EditProductForm product={product} categories={categories} />
+          <EditProductForm product={product} categories={categories} designGroups={designGroups} />
         </CardContent>
       </Card>
     </div>

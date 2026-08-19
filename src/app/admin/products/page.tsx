@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getProducts } from "@/lib/actions/products";
+import { getProducts, getDesignGroups } from "@/lib/actions/products";
 import { getCategories } from "@/lib/actions/categories";
 import { Package, Edit } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 export default async function ProductsPage() {
   const products = await getProducts();
   const categories = await getCategories();
+  const designGroups = await getDesignGroups();
 
   return (
     <div className="space-y-8">
@@ -28,7 +29,7 @@ export default async function ProductsPage() {
               <CardTitle>Add New Product</CardTitle>
             </CardHeader>
             <CardContent>
-              <ProductForm categories={categories} />
+              <ProductForm categories={categories} designGroups={designGroups} />
             </CardContent>
           </Card>
         </div>

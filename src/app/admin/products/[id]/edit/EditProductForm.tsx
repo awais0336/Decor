@@ -5,7 +5,7 @@ import { Save, Plus, Trash2 } from "lucide-react";
 import { updateProduct } from "@/lib/actions/products";
 import { useRouter } from "next/navigation";
 
-export default function EditProductForm({ product, categories }: { product: any, categories: any[] }) {
+export default function EditProductForm({ product, categories, designGroups = [] }: { product: any, categories: any[], designGroups?: string[] }) {
   const router = useRouter();
   
   // Initialize variants state with existing product variants
@@ -77,8 +77,38 @@ export default function EditProductForm({ product, categories }: { product: any,
           </select>
         </div>
       </div>
-
-
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <label htmlFor="design_group" className="text-sm font-medium">Design Group (Optional)</label>
+          <input 
+            type="text" 
+            id="design_group" 
+            name="design_group"
+            list="design_groups_list"
+            defaultValue={product.design_group || ""}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="e.g. 99-names-of-allah"
+          />
+          <datalist id="design_groups_list">
+            {designGroups.map((group) => (
+              <option key={group} value={group} />
+            ))}
+          </datalist>
+          <p className="text-[10px] text-muted-foreground">Used to group different sizes of the same design together.</p>
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="size_label" className="text-sm font-medium">Size Label (Optional)</label>
+          <input 
+            type="text" 
+            id="size_label" 
+            name="size_label"
+            defaultValue={product.size_label || ""}
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            placeholder="e.g. 2 x 3 ft"
+          />
+          <p className="text-[10px] text-muted-foreground">The display label for this specific size.</p>
+        </div>
+      </div>
 
       <div className="space-y-2">
         <label htmlFor="description" className="text-sm font-medium">Description</label>

@@ -34,6 +34,10 @@ export async function createProduct(formData: FormData) {
     const category_id = formData.get("category_id") as string || null;
     const is_featured = formData.get("is_featured") === "on";
     const status = formData.get("status") as string;
+    const designGroupStr = formData.get("design_group") as string;
+    const design_group = designGroupStr ? designGroupStr.toLowerCase().trim().replace(/[\s_]+/g, '-') : null;
+    const sizeLabelStr = formData.get("size_label") as string;
+    const size_label = sizeLabelStr ? sizeLabelStr.trim() : null;
     
     // Insert Product
     const { data: product, error: productError } = await supabase
@@ -46,7 +50,9 @@ export async function createProduct(formData: FormData) {
           base_price, 
           category_id, 
           is_featured, 
-          status 
+          status,
+          design_group,
+          size_label
         }
       ])
       .select()
@@ -119,6 +125,21 @@ export async function getProducts() {
   }
   
   return data;
+}
+
+export async function getDesignGroups() {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("design_group")
+    .not("design_group", "is", null);
+
+  if (error) {
+    console.error("Error fetching design groups:", error);
+    return [];
+  }
+  
+  return Array.from(new Set(data.map((p: any) => p.design_group).filter(Boolean))).sort();
 }
 
 export async function deleteProduct(id: string) {
@@ -204,10 +225,14 @@ export async function updateProduct(id: string, formData: FormData) {
     const category_id = formData.get("category_id") as string || null;
     const status = formData.get("status") as string;
     const is_featured = formData.get("is_featured") === "on";
+    const designGroupStr = formData.get("design_group") as string;
+    const design_group = designGroupStr ? designGroupStr.toLowerCase().trim().replace(/[\s_]+/g, '-') : null;
+    const sizeLabelStr = formData.get("size_label") as string;
+    const size_label = sizeLabelStr ? sizeLabelStr.trim() : null;
     
     const { error: productError } = await supabase
       .from("products")
-      .update({ name, slug, description, base_price, category_id, status, is_featured })
+      .update({ name, slug, description, base_price, category_id, status, is_featured, design_group, size_label })
       .eq("id", id);
 
     if (productError) return { error: productError.message };

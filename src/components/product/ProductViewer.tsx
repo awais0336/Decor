@@ -4,6 +4,8 @@ import { useState } from "react";
 import { ProductGallery } from "@/components/product/ProductGallery";
 import { AddToCartActions } from "@/components/product/AddToCartActions";
 import { Check, Plus } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
 
 export function ProductViewer({ product }: { product: any }) {
   const [mainImage, setMainImage] = useState(
@@ -100,7 +102,7 @@ export function ProductViewer({ product }: { product: any }) {
 
         <AddToCartActions product={product} selectedVariant={selectedVariant} />
         
-        <div className={`flex items-center gap-2 font-sans text-sm font-medium mb-12 ${product.inStock ? "text-brand-success" : "text-red-500"}`}>
+        <div className={`flex items-center gap-2 font-sans text-sm font-medium mb-8 ${product.inStock ? "text-brand-success" : "text-red-500"}`}>
           {product.inStock ? (
             <><Check className="w-4 h-4" /> In Stock. Ready to ship.</>
           ) : (
@@ -108,6 +110,39 @@ export function ProductViewer({ product }: { product: any }) {
           )}
         </div>
         
+        {product.siblings && product.siblings.length > 0 && (
+          <div className="mb-12 pt-8 border-t border-brand-border/20">
+            <span className="block text-sm font-semibold uppercase tracking-widest text-brand-text mb-4">Also available in:</span>
+            <div className="flex flex-wrap gap-4">
+              {product.siblings.map((sibling: any) => (
+                <Link
+                  href={`/product/${sibling.id}`}
+                  key={sibling.id}
+                  className="flex flex-col gap-2 p-3 border border-brand-border/40 hover:border-brand-gold bg-brand-secondary/30 text-brand-text/80 hover:text-brand-text transition-all min-w-[100px] rounded-lg group"
+                >
+                  {sibling.image && (
+                    <div className="w-full aspect-square relative bg-brand-secondary overflow-hidden shrink-0 rounded-md">
+                      <Image 
+                        src={sibling.image} 
+                        alt={sibling.name}
+                        fill sizes="100px"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-col">
+                    <span className="text-xs font-semibold w-full">
+                      {sibling.size_label || sibling.name}
+                    </span>
+                    <span className="text-xs font-medium mt-1">
+                      Rs. {sibling.price.toLocaleString()}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

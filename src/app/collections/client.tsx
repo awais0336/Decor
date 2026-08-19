@@ -263,6 +263,11 @@ export default function CollectionsClient({ categorySlug, breadcrumbs, initialPr
                 )}
               >
                 <div className={cn(`relative bg-[#f5f5f7] overflow-hidden rounded-2xl ${view === "grid" ? "aspect-square w-full mb-3" : "aspect-square w-48 flex-shrink-0"}`)}>
+                  {product.siblingCount > 1 && (
+                    <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[10px] font-bold tracking-wider uppercase text-brand-text shadow-sm z-10 pointer-events-none">
+                      {product.siblingCount} Sizes Available
+                    </div>
+                  )}
                   <Image
                     src={product.image}
                     alt={product.name}
