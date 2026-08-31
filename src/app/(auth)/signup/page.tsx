@@ -72,7 +72,7 @@ function SignupForm() {
     <div className="min-h-screen pt-32 pb-16 px-4 flex items-center justify-center bg-brand-secondary/30">
       <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-sm border border-brand-border/50">
         <div className="text-center mb-8">
-          <h1 className="font-heading text-3xl text-brand-primary mb-2">Create Account</h1>
+          <h1 className="font-heading text-3xl text-brand-text mb-2">Create Account</h1>
           <p className="text-brand-text/70 text-sm">Join Decornish today</p>
         </div>
 
