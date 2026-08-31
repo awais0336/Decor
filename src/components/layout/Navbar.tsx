@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, Heart, ShoppingBag, X, MessageCircle, Menu } from "lucide-react";
+import { Search, Heart, ShoppingBag, X, MessageCircle, Menu, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { createClient } from "@/utils/supabase/client";
 import { useCart } from "@/components/cart/CartContext";
 import { useRouter, usePathname } from "next/navigation";
 import { searchStorefrontProducts } from "@/lib/actions/storefront";
@@ -18,6 +19,7 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const { cartCount, setIsCartOpen, wishlistItems } = useCart();
   const router = useRouter();
   const pathname = usePathname();
@@ -32,7 +34,20 @@ export function Navbar() {
     };
     
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      setUser(session?.user || null);
+    });
+    
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -147,6 +162,10 @@ export function Navbar() {
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <Search className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
           </button>
+          <Link href={user ? "/account" : "/login"} className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Account">
+            <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
+            <User className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
+          </Link>
           <Link href="/wishlist" className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Wishlist">
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <Heart className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />

@@ -1,7 +1,9 @@
 "use client";
  
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { mergeCartWithSupabase, saveCartToSupabase } from "@/lib/actions/cart";
 
 export type CartItem = {
   id: string;
@@ -10,6 +12,7 @@ export type CartItem = {
   rawPrice: number;
   image: string;
   quantity: number;
+  variant?: any;
 };
 
 type CartContextType = {
@@ -32,33 +35,89 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [wishlistItems, setWishlistItems] = useState<any[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  
+  const initialLoadDone = useRef(false);
 
   useEffect(() => {
-     
     setMounted(true);
+    
+    // Load local wishlist
     const savedWishlist = localStorage.getItem("decornish_wishlist");
     if (savedWishlist) {
-      try {
-        setWishlistItems(JSON.parse(savedWishlist));
-      } catch (e) {
-        console.error("Error parsing wishlist", e);
+      try { setWishlistItems(JSON.parse(savedWishlist)); } catch (e) {}
+    }
+
+    // Load local cart
+    const savedCart = localStorage.getItem("decornish_cart");
+    let localCart: CartItem[] = [];
+    if (savedCart) {
+      try { localCart = JSON.parse(savedCart); } catch (e) {}
+    }
+
+    const supabase = createClient();
+    
+    // Check Auth and merge cart
+    supabase.auth.getUser().then(async ({ data: { user: currentUser } }) => {
+      setUser(currentUser);
+      
+      if (currentUser) {
+        // Merge local cart with DB cart
+        const result = await mergeCartWithSupabase(localCart);
+        if (result.success && result.items) {
+          setItems(result.items);
+          localStorage.setItem("decornish_cart", JSON.stringify(result.items));
+        } else {
+          setItems(localCart);
+        }
+      } else {
+        setItems(localCart);
+      }
+      initialLoadDone.current = true;
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      const currentUser = session?.user || null;
+      
+      // If user logged in (transition from null to user)
+      if (currentUser && !user && initialLoadDone.current) {
+        const result = await mergeCartWithSupabase(items);
+        if (result.success && result.items) {
+          setItems(result.items);
+        }
+      } else if (!currentUser && user) {
+        // Logged out
+        setItems([]);
+        localStorage.removeItem("decornish_cart");
+      }
+      
+      setUser(currentUser);
+    });
+    
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []); // Run once on mount
+
+  // Sync to local storage and DB when items change
+  useEffect(() => {
+    if (mounted && initialLoadDone.current) {
+      localStorage.setItem("decornish_wishlist", JSON.stringify(wishlistItems));
+      localStorage.setItem("decornish_cart", JSON.stringify(items));
+
+      if (user) {
+        // Debounce or just save directly (since it's server action, let's just save)
+        const timeout = setTimeout(() => {
+          saveCartToSupabase(items);
+        }, 1000);
+        return () => clearTimeout(timeout);
       }
     }
-  }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("decornish_wishlist", JSON.stringify(wishlistItems));
-      // Clean up legacy cart persistence if it exists
-      localStorage.removeItem("decornish_cart");
-    }
-  }, [wishlistItems, mounted]);
+  }, [wishlistItems, items, mounted, user]);
 
   const addToCart = (product: any) => {
-    // If the product comes from the storefront, it has `images` array.
-    // If it's already a CartItem being re-added, it has `image`.
     if (product.inStock === false) {
-      return; // Safety check to prevent adding out of stock items
+      return; 
     }
     const itemImage = product.image || (product.images && product.images[0]) || "";
     const qtyToAdd = product.quantity && product.quantity > 0 ? product.quantity : 1;
@@ -72,7 +131,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { ...product, image: itemImage, quantity: qtyToAdd }];
     });
-    // Optional: open the cart when adding an item
     setIsCartOpen(true);
   };
 
@@ -104,6 +162,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setItems([]);
     if (typeof window !== "undefined") {
       localStorage.removeItem("decornish_cart");
+    }
+    if (user) {
+      saveCartToSupabase([]);
     }
   };
 

@@ -6,12 +6,14 @@ import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { processCheckout } from "@/lib/actions/checkout";
+import { GuestToAccountBridge } from "@/components/checkout/GuestToAccountBridge";
 
 export default function CheckoutPage() {
   const { items, setIsCartOpen, clearCart } = useCart();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [customerDetails, setCustomerDetails] = useState({ email: "", firstName: "", lastName: "" });
 
   const [city, setCity] = useState("");
   const [couponInput, setCouponInput] = useState("");
@@ -59,6 +61,11 @@ export default function CheckoutPage() {
     setError("");
     
     const formData = new FormData(e.currentTarget);
+    setCustomerDetails({
+      email: formData.get("email") as string,
+      firstName: formData.get("firstName") as string,
+      lastName: formData.get("lastName") as string,
+    });
     const result = await processCheckout(formData, items, total, appliedCoupon || undefined);
     
     setIsSubmitting(false);
@@ -94,6 +101,12 @@ export default function CheckoutPage() {
               Continue Shopping
             </Link>
           </div>
+          
+          <GuestToAccountBridge 
+            email={customerDetails.email} 
+            firstName={customerDetails.firstName} 
+            lastName={customerDetails.lastName} 
+          />
         </div>
       </div>
     );

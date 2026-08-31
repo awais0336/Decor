@@ -22,6 +22,7 @@ export default function EditProductForm({ product, categories, designGroups = []
     : [];
 
   const [variants, setVariants] = useState(initialVariants);
+  const [existingImages, setExistingImages] = useState(product.images || []);
 
   const addVariant = () => {
     setVariants([...variants, { id: "", name: "", sku: "", price: "0", quantity: "0", hasImage: false, existingImageUrl: "" }]);
@@ -37,12 +38,21 @@ export default function EditProductForm({ product, categories, designGroups = []
     setVariants(newVariants);
   };
 
+  const removeExistingImage = (id: string) => {
+    setExistingImages(existingImages.filter((img: any) => img.id !== id));
+  };
+
   const handleSubmit = async (formData: FormData) => {
     // We append the variant IDs to keep track of existing ones to update vs new ones to insert
     variants.forEach((v: any) => {
       formData.append("variant_id[]", v.id || "");
       formData.append("variant_existing_image[]", v.existingImageUrl || "");
     });
+    
+    existingImages.forEach((img: any) => {
+      formData.append("existing_image_id[]", img.id);
+    });
+
     await updateProduct(product.id, formData);
     router.push("/admin/products");
   };
@@ -135,6 +145,39 @@ export default function EditProductForm({ product, categories, designGroups = []
           rows={4}
           className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
         ></textarea>
+      </div>
+
+      <div className="space-y-4">
+        <label className="text-sm font-medium">Product Images</label>
+        
+        {existingImages.length > 0 && (
+          <div className="flex flex-wrap gap-4 mb-4">
+            {existingImages.map((img: any) => (
+              <div key={img.id} className="relative group rounded-md overflow-hidden border">
+                <img src={img.image_url} alt="Product" className="w-24 h-24 object-cover" />
+                <button
+                  type="button"
+                  onClick={() => removeExistingImage(img.id)}
+                  className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Trash2 className="w-5 h-5 text-white" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="space-y-2">
+          <input 
+            type="file" 
+            id="product_images" 
+            name="product_images[]" 
+            multiple
+            accept="image/*"
+            className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          />
+          <p className="text-[10px] text-muted-foreground">Select additional images to show in the gallery. Hold Ctrl/Cmd to select multiple files.</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

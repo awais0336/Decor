@@ -1,7 +1,7 @@
 "use server";
  
 
-import { createAdminClient } from "@/utils/supabase/server";
+import { createAdminClient, createClient } from "@/utils/supabase/server";
 import { sendCheckoutEmail } from "@/lib/email";
 
 export async function processCheckout(formData: FormData, cartItems: any[], rawTotal: number, couponCode?: string) {
@@ -15,6 +15,9 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
     const phone = formData.get("phone") as string;
 
     const supabase = createAdminClient();
+    const supabaseAuth = await createClient();
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    const userId = user ? user.id : null;
 
     // 0. Validate Stock Before Proceeding
     for (const item of cartItems) {
@@ -48,7 +51,8 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
       city: city,
       postal_code: postalCode,
       country: "Pakistan",
-      is_default: true
+      is_default: true,
+      profile_id: userId
     }).select().single();
 
     if (addressError) {
@@ -83,7 +87,7 @@ export async function processCheckout(formData: FormData, cartItems: any[], rawT
 
     // 2. Create Order
     const { data: order, error: orderError } = await supabase.from("orders").insert({
-      customer_id: null, // Guest checkout
+      customer_id: userId,
       status: "pending",
       subtotal: rawTotal,
       shipping_cost: shippingCost,

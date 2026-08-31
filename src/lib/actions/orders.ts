@@ -47,5 +47,34 @@ export async function updateOrderStatus(id: string, status: string) {
   return { success: true };
 }
 
+export async function getUserOrders() {
+  const { createClient } = await import("@/utils/supabase/server");
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
+  if (!user) {
+    return { success: false, error: "Not logged in" };
+  }
 
+  const { data: orders, error } = await supabase
+    .from("orders")
+    .select(`
+      *,
+      order_items (
+        *,
+        variants (
+          *,
+          products (*)
+        )
+      )
+    `)
+    .eq("customer_id", user.id)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Fetch orders error:", error);
+    return { success: false, error: "Failed to fetch orders" };
+  }
+
+  return { success: true, orders };
+}

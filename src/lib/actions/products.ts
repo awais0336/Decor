@@ -66,7 +66,28 @@ export async function createProduct(formData: FormData) {
       return { error: productError?.message || "Failed to create product" };
     }
 
-
+    // Handle Product Images
+    const productImages = formData.getAll("product_images[]") as File[];
+    if (productImages && productImages.length > 0) {
+      const imagesToInsert = [];
+      for (let i = 0; i < productImages.length; i++) {
+        const file = productImages[i];
+        if (file && file.size > 0) {
+          const imageUrl = await uploadImage(file);
+          if (imageUrl) {
+            imagesToInsert.push({
+              product_id: product.id,
+              image_url: imageUrl,
+              display_order: i
+            });
+          }
+        }
+      }
+      
+      if (imagesToInsert.length > 0) {
+        await supabase.from("product_images").insert(imagesToInsert);
+      }
+    }
 
     // Handle Variants
     const variantNames = formData.getAll("variant_name[]") as string[];
@@ -242,7 +263,38 @@ export async function updateProduct(id: string, formData: FormData) {
 
     if (productError) return { error: productError.message };
 
+    // Handle existing product images deletions
+    const existingImageIds = formData.getAll("existing_image_id[]") as string[];
+    const { data: currentImages } = await supabase.from("product_images").select("id").eq("product_id", id);
+    if (currentImages) {
+      const imagesToDelete = currentImages.filter(img => !existingImageIds.includes(img.id)).map(img => img.id);
+      if (imagesToDelete.length > 0) {
+        await supabase.from("product_images").delete().in("id", imagesToDelete);
+      }
+    }
 
+    // Handle new product images
+    const productImages = formData.getAll("product_images[]") as File[];
+    if (productImages && productImages.length > 0) {
+      const imagesToInsert = [];
+      const currentOrder = existingImageIds.length;
+      for (let i = 0; i < productImages.length; i++) {
+        const file = productImages[i];
+        if (file && file.size > 0) {
+          const imageUrl = await uploadImage(file);
+          if (imageUrl) {
+            imagesToInsert.push({
+              product_id: id,
+              image_url: imageUrl,
+              display_order: currentOrder + i
+            });
+          }
+        }
+      }
+      if (imagesToInsert.length > 0) {
+        await supabase.from("product_images").insert(imagesToInsert);
+      }
+    }
 
     // Handle Variants
     const variantIds = formData.getAll("variant_id[]") as string[];

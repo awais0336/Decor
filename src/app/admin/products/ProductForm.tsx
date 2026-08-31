@@ -174,6 +174,19 @@ export default function ProductForm({ categories, designGroups = [] }: { categor
         ></textarea>
       </div>
 
+      <div className="space-y-2">
+        <label htmlFor="product_images" className="text-sm font-medium">Product Images</label>
+        <input 
+          type="file" 
+          id="product_images" 
+          name="product_images[]" 
+          multiple
+          accept="image/*"
+          className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+        />
+        <p className="text-[10px] text-muted-foreground">Select multiple images to show in the gallery (e.g. size guides, angles). Hold Ctrl/Cmd to select multiple files.</p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="space-y-2">
           <label htmlFor="base_price" className="text-sm font-medium">Base Price (Optional, Rs.)</label>
