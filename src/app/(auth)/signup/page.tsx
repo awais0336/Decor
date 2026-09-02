@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Mail, Lock, User, AlertCircle, Loader2, CheckCircle2 } from "lucide-react";
+import { useCart } from "@/components/cart/CartContext";
 
 import { Suspense } from "react";
 
@@ -19,7 +20,8 @@ function SignupForm() {
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/account";
+  const next = searchParams.get("next") || "/";
+  const { cartCount } = useCart();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,7 +62,7 @@ function SignupForm() {
           <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <h2 className="font-heading text-2xl text-brand-primary mb-2">Account Created!</h2>
+          <h2 className="font-heading text-2xl text-brand-text mb-2">Account Created!</h2>
           <p className="text-brand-text/70 mb-6">Redirecting you to your destination...</p>
           <Loader2 className="w-6 h-6 animate-spin mx-auto text-brand-gold" />
         </div>
@@ -159,8 +161,17 @@ function SignupForm() {
 
         <div className="mt-8 text-center text-sm text-brand-text/70">
           Already have an account?{" "}
-          <Link href={`/login${next ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-brand-gold hover:underline font-medium">
+          <Link href={`/login${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-brand-gold hover:underline font-medium">
             Sign in
+          </Link>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-brand-border/50">
+          <Link 
+            href={cartCount > 0 ? "/checkout" : "/"} 
+            className="w-full flex items-center justify-center py-3 px-4 border border-brand-border rounded-md font-medium text-brand-text hover:bg-brand-secondary/50 transition-colors"
+          >
+            {cartCount > 0 ? "Order as Guest" : "Continue as Guest"}
           </Link>
         </div>
       </div>

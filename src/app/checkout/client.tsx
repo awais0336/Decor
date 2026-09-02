@@ -293,6 +293,16 @@ export default function CheckoutPage() {
                   <span>Rs. {finalTotal.toLocaleString()}</span>
                 </div>
               </div>
+
+              {/* Added Continue Shopping Button */}
+              <div className="mt-6 pt-6 border-t border-dashed">
+                <Link 
+                  href="/collections"
+                  className="w-full flex items-center justify-center py-3 px-4 border-2 border-brand-text rounded-md font-medium text-brand-text hover:bg-brand-text hover:text-white transition-colors"
+                >
+                  Continue Shopping
+                </Link>
+              </div>
             </div>
           </div>
         </div>

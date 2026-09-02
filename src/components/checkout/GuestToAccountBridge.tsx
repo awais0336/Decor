@@ -25,7 +25,7 @@ export function GuestToAccountBridge({ email, firstName, lastName }: { email: st
   if (success) {
     return (
       <div className="mt-12 bg-white p-6 rounded-lg shadow-sm border border-brand-gold/50 max-w-md mx-auto">
-        <h3 className="font-heading text-xl text-brand-primary mb-2">Account Created!</h3>
+        <h3 className="font-heading text-xl text-brand-text mb-2">Account Created!</h3>
         <p className="text-sm text-brand-text/70 mb-4">
           You can now track your order status and save your information for next time.
         </p>
@@ -68,7 +68,7 @@ export function GuestToAccountBridge({ email, firstName, lastName }: { email: st
   return (
     <div className="mt-12 bg-white p-6 rounded-lg shadow-sm border border-brand-border/50 max-w-md mx-auto text-left">
       <div className="mb-6">
-        <h3 className="font-heading text-xl text-brand-primary mb-2">Save your information for next time</h3>
+        <h3 className="font-heading text-xl text-brand-text mb-2">Save your information for next time</h3>
         <p className="text-sm text-brand-text/70">
           Create a password for <strong>{email}</strong> to easily track this order and speed up future checkouts.
         </p>

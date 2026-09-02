@@ -17,7 +17,7 @@ export default async function OrdersPage() {
   return (
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-sm border border-brand-border/50">
-        <h2 className="font-heading text-2xl text-brand-primary">Order History</h2>
+        <h2 className="font-heading text-2xl text-brand-text">Order History</h2>
         <p className="text-sm text-brand-text/70 mt-2">
           View all your past orders and easily reorder your favorite luxury items.
         </p>

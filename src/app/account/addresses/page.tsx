@@ -17,12 +17,12 @@ export default async function AddressesPage() {
     <div className="space-y-6">
       <div className="bg-white p-6 rounded-lg shadow-sm border border-brand-border/50 flex justify-between items-center">
         <div>
-          <h2 className="font-heading text-2xl text-brand-primary">Addresses</h2>
+          <h2 className="font-heading text-2xl text-brand-text">Addresses</h2>
           <p className="text-sm text-brand-text/70 mt-1">
             Manage your shipping and billing addresses.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-brand-primary text-white px-4 py-2 rounded-md hover:bg-brand-primary/90 transition-colors text-sm font-medium">
+        <button className="flex items-center gap-2 bg-brand-text text-white px-4 py-2 rounded-md hover:bg-brand-text/90 transition-colors text-sm font-medium">
           <Plus className="w-4 h-4" />
           Add Address
         </button>
@@ -54,7 +54,7 @@ export default async function AddressesPage() {
                 <p>{addr.country}</p>
               </address>
               <div className="mt-6 flex gap-4 text-sm font-medium">
-                <button className="text-brand-primary hover:underline">Edit</button>
+                <button className="text-brand-gold hover:underline">Edit</button>
                 <button className="text-red-500 hover:underline">Delete</button>
               </div>
             </div>

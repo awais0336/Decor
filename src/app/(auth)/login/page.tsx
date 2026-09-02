@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Mail, Lock, AlertCircle, Loader2 } from "lucide-react";
+import { useCart } from "@/components/cart/CartContext";
 
 import { Suspense } from "react";
 
@@ -15,7 +16,8 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") || "/account";
+  const next = searchParams.get("next") || "/";
+  const { cartCount } = useCart();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,8 +106,17 @@ function LoginForm() {
 
         <div className="mt-8 text-center text-sm text-brand-text/70">
           Don't have an account?{" "}
-          <Link href={`/signup${next ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-brand-gold hover:underline font-medium">
+          <Link href={`/signup${next !== "/" ? `?next=${encodeURIComponent(next)}` : ""}`} className="text-brand-gold hover:underline font-medium">
             Sign up
+          </Link>
+        </div>
+
+        <div className="mt-6 pt-6 border-t border-brand-border/50">
+          <Link 
+            href={cartCount > 0 ? "/checkout" : "/"} 
+            className="w-full flex items-center justify-center py-3 px-4 border border-brand-border rounded-md font-medium text-brand-text hover:bg-brand-secondary/50 transition-colors"
+          >
+            {cartCount > 0 ? "Order as Guest" : "Continue as Guest"}
           </Link>
         </div>
       </div>

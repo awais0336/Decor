@@ -162,7 +162,7 @@ export function Navbar() {
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <Search className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
           </button>
-          <Link href={user ? "/account" : "/login"} className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Account">
+          <Link href={user ? "/account" : (pathname === '/login' || pathname === '/signup') ? "/login" : `/login?next=${encodeURIComponent(pathname)}`} className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Account">
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <User className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
           </Link>
@@ -183,7 +183,7 @@ export function Navbar() {
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <ShoppingBag className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
             {cartCount > 0 && (
-              <span className={cn("absolute -top-1.5 -right-1.5 text-[9px] sm:text-[10px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-medium z-20 transition-colors", isHomePage && !scrolled ? "bg-white text-brand-primary" : "bg-brand-text text-brand-primary")}>
+              <span className={cn("absolute -top-1.5 -right-1.5 text-[9px] sm:text-[10px] w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center font-medium z-20 transition-colors", isHomePage && !scrolled ? "bg-white text-brand-text" : "bg-brand-text text-brand-primary")}>
                 {cartCount}
               </span>
             )}

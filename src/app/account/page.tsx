@@ -18,7 +18,7 @@ export default async function AccountOverviewPage() {
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow-sm border border-brand-border/50">
-        <h2 className="font-heading text-2xl text-brand-primary mb-4">Dashboard</h2>
+        <h2 className="font-heading text-2xl text-brand-text mb-4">Dashboard</h2>
         <p className="text-brand-text/70">
           From your account dashboard you can view your recent orders, manage your shipping and billing addresses, and edit your password and account details.
         </p>
