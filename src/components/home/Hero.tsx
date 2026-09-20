@@ -44,7 +44,7 @@ export function Hero() {
         <Image
           ref={imageRef}
           src="/images/hero.png"
-          alt="Luxury Living Room"
+          alt="A beautifully curated luxury living room showcasing Decornish premium home decor and furniture"
           fill
           priority
           quality={90}
@@ -90,7 +90,7 @@ export function Hero() {
         >
           <Link 
             href="/collections"
-            className="group relative flex items-center justify-center gap-3 bg-white text-brand-text px-8 py-4 rounded-full font-button font-medium overflow-hidden transition-transform hover:scale-105"
+            className="group relative flex items-center justify-center gap-3 bg-white text-brand-text px-8 py-4 rounded-full font-button font-medium overflow-hidden transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none"
           >
             <span className="relative z-10">Explore Collection</span>
             <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />

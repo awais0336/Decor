@@ -17,6 +17,7 @@ function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [hasConsented, setHasConsented] = useState(false);
   
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -145,11 +146,25 @@ function SignupForm() {
             </div>
           </div>
 
+          <div className="flex items-start gap-3 mt-4">
+            <input
+              type="checkbox"
+              id="consent"
+              required
+              checked={hasConsented}
+              onChange={(e) => setHasConsented(e.target.checked)}
+              className="mt-1 w-4 h-4 rounded border-brand-border text-brand-gold focus:ring-brand-gold focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none"
+            />
+            <label htmlFor="consent" className="text-sm text-brand-text/80 leading-relaxed">
+              I agree to the <Link href="/privacy-policy" className="text-brand-gold hover:underline focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-sm">Privacy Policy</Link> and <Link href="/terms-of-service" className="text-brand-gold hover:underline focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-sm">Terms of Service</Link>, and I confirm that I am at least 18 years old.
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading || !firstName || !lastName || !email || password.length < 6}
-            className={`w-full py-3 px-4 rounded-md font-medium transition-colors flex items-center justify-center gap-2 
-              ${(firstName && lastName && email && password.length >= 6) 
+            disabled={isLoading || !firstName || !lastName || !email || password.length < 6 || !hasConsented}
+            className={`w-full py-3 px-4 rounded-md font-medium transition-colors flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none
+              ${(firstName && lastName && email && password.length >= 6 && hasConsented) 
                 ? "bg-brand-gold text-white hover:bg-brand-gold/90 shadow-md" 
                 : "bg-brand-secondary text-brand-text/40 cursor-not-allowed"
               }`}

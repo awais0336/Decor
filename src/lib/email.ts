@@ -145,6 +145,8 @@ Our team will contact you shortly to confirm the final delivery details. If you 
 
 Need help? Contact our support team at ${siteConfig.contactEmail}
 
+To unsubscribe from future transactional or marketing emails, please reply with "UNSUBSCRIBE" or email ${siteConfig.contactEmail} with "Opt-out" in the subject.
+
 © ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.
 `.trim();
 
@@ -185,6 +187,7 @@ Need help? Contact our support team at ${siteConfig.contactEmail}
   
   <div style="margin-top: 45px; padding-top: 20px; border-top: 1px solid #eaeaea; font-size: 13px; color: #777777; text-align: center;">
     <p>Need help? Contact our support team at <br><a href="mailto:${siteConfig.contactEmail}" style="color: #D4951B; text-decoration: none; font-weight: bold;">${siteConfig.contactEmail}</a></p>
+    <p style="margin-top: 10px;">To unsubscribe from future emails, please <a href="mailto:${siteConfig.contactEmail}?subject=Opt-out" style="color: #777777; text-decoration: underline;">click here to opt-out</a>.</p>
     <p style="margin-top: 15px;">© ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
   </div>
 </div>
@@ -282,6 +285,8 @@ If you have any immediate details to add, feel free to reply directly to this em
 
 Need help? Contact our support team at ${siteConfig.contactEmail}
 
+To unsubscribe from future communications, please reply with "UNSUBSCRIBE" or email ${siteConfig.contactEmail} with "Opt-out" in the subject.
+
 © ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.
 `.trim();
 
@@ -303,6 +308,7 @@ Need help? Contact our support team at ${siteConfig.contactEmail}
   
   <div style="margin-top: 45px; padding-top: 20px; border-top: 1px solid #eaeaea; font-size: 13px; color: #777777; text-align: center;">
     <p>Need help? Contact our support team at <br><a href="mailto:${siteConfig.contactEmail}" style="color: #D4951B; text-decoration: none; font-weight: bold;">${siteConfig.contactEmail}</a></p>
+    <p style="margin-top: 10px;">To unsubscribe from future emails, please <a href="mailto:${siteConfig.contactEmail}?subject=Opt-out" style="color: #777777; text-decoration: underline;">click here to opt-out</a>.</p>
     <p style="margin-top: 15px;">© ${new Date().getFullYear()} ${siteConfig.name}. All rights reserved.</p>
   </div>
 </div>

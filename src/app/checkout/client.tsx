@@ -20,6 +20,7 @@ export default function CheckoutPage() {
   const [appliedCoupon, setAppliedCoupon] = useState("");
   const [discountPercentage, setDiscountPercentage] = useState(0);
   const [couponError, setCouponError] = useState("");
+  const [hasConsented, setHasConsented] = useState(false);
 
   const total = items.reduce((acc, item) => {
     return acc + (item.rawPrice || 0) * item.quantity;
@@ -180,10 +181,24 @@ export default function CheckoutPage() {
                 </div>
               )}
 
+              <div className="flex items-start gap-3 mt-4">
+                <input
+                  type="checkbox"
+                  id="consent"
+                  required
+                  checked={hasConsented}
+                  onChange={(e) => setHasConsented(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-brand-border text-brand-gold focus:ring-brand-gold focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none"
+                />
+                <label htmlFor="consent" className="text-sm text-brand-text/80 leading-relaxed">
+                  I agree to the <Link href="/privacy-policy" className="text-brand-gold hover:underline focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-sm">Privacy Policy</Link> and <Link href="/terms-of-service" className="text-brand-gold hover:underline focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-sm">Terms of Service</Link>, and I confirm that all details provided are accurate.
+                </label>
+              </div>
+
               <button 
                 type="submit"
-                disabled={isSubmitting || items.length === 0}
-                className="w-full flex items-center justify-center gap-2 bg-brand-text text-white py-4 rounded-md font-button font-semibold text-lg hover:bg-brand-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={isSubmitting || items.length === 0 || !hasConsented}
+                className="w-full flex items-center justify-center gap-2 bg-brand-text text-white py-4 rounded-md font-button font-semibold text-lg hover:bg-brand-gold transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none"
               >
                 {isSubmitting ? (
                   <>

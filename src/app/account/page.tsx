@@ -58,6 +58,19 @@ export default async function AccountOverviewPage() {
           </Link>
         </div>
       </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-brand-border/50">
+        <h3 className="font-heading text-xl text-brand-text mb-2 text-red-600">Danger Zone</h3>
+        <p className="text-sm text-brand-text/70 mb-4">
+          Permanently delete your account and all associated personal data. This action cannot be undone.
+        </p>
+        <a 
+          href="mailto:Decornish.pk@gmail.com?subject=Data%20Deletion%20Request"
+          className="inline-block border border-red-200 bg-red-50 text-red-600 px-4 py-2 rounded-md text-sm font-medium hover:bg-red-100 transition-colors focus-visible:ring-2 focus-visible:ring-red-500 focus:outline-none"
+        >
+          Request Data Deletion
+        </a>
+      </div>
     </div>
   );
 }

@@ -85,7 +85,7 @@ export function Navbar() {
       {/* Top Announcement Bar - Static */}
       <div className="w-full bg-brand-text text-brand-primary flex items-center justify-center py-2 md:py-2.5">
         <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">
-          Premium Quality Guarantee
+          Premium Quality Decor
         </span>
       </div>
 
@@ -113,7 +113,7 @@ export function Navbar() {
         {/* Left Space - Hamburger Menu */}
         <div className="flex-1 flex items-center">
           <button 
-            className="group relative flex items-center justify-center transition-transform hover:scale-110 p-2 -ml-2"
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 p-2 -ml-2 focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-md"
             onClick={() => setIsSidebarOpen(true)}
             aria-label="Open Menu"
           >
@@ -128,7 +128,7 @@ export function Navbar() {
           "transition-transform duration-500 shrink-0 mx-2",
           scrolled ? "scale-90" : "scale-100"
         )}>
-          <Link href="/">
+          <Link href="/" className="focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-sm inline-block">
             <h1 className={cn("font-heading text-xl sm:text-2xl md:text-4xl tracking-tight uppercase transition-colors", iconColor)}>
               Decornish
             </h1>
@@ -141,7 +141,7 @@ export function Navbar() {
             href="https://wa.me/923289111139" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="group relative flex items-center justify-center transition-transform hover:scale-110"
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-full"
             aria-label="WhatsApp Message"
           >
             <div className="absolute inset-0 bg-[#25D366]/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -155,18 +155,18 @@ export function Navbar() {
             </svg>
           </a>
           <button 
-            className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" 
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-full" 
             aria-label="Search"
             onClick={() => setIsSearchOpen(true)}
           >
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <Search className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
           </button>
-          <Link href={user ? "/account" : (pathname === '/login' || pathname === '/signup') ? "/login" : `/login?next=${encodeURIComponent(pathname)}`} className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Account">
+          <Link href={user ? "/account" : (pathname === '/login' || pathname === '/signup') ? "/login" : `/login?next=${encodeURIComponent(pathname)}`} className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-full" aria-label="Account">
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <User className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
           </Link>
-          <Link href="/wishlist" className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" aria-label="Wishlist">
+          <Link href="/wishlist" className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-full" aria-label="Wishlist">
             <div className={cn("absolute inset-0 rounded-full blur-md opacity-100 transition-colors", glowColor)} />
             <Heart className={cn("w-4 h-4 sm:w-5 sm:h-5 relative z-10 transition-colors", iconColor)} strokeWidth={1.5} />
             {wishlistItems.length > 0 && (
@@ -176,7 +176,7 @@ export function Navbar() {
             )}
           </Link>
           <button 
-            className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold" 
+            className="group relative flex items-center justify-center transition-transform hover:scale-110 hover:text-brand-gold focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-full" 
             aria-label="Cart"
             onClick={() => setIsCartOpen(true)}
           >
@@ -210,7 +210,7 @@ export function Navbar() {
                   />
                   <button 
                     type="submit"
-                    className="absolute right-0 top-1/2 -translate-y-1/2 p-3 text-brand-text/50 hover:text-brand-gold transition-colors"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 p-3 text-brand-text/50 hover:text-brand-gold transition-colors focus-visible:ring-2 focus-visible:ring-brand-gold focus:outline-none rounded-md"
                   >
                     <Search className="w-5 h-5" strokeWidth={1.5} />
                   </button>
